@@ -50,6 +50,7 @@ update_status ModuleEditor::Update()
 
 update_status ModuleEditor::PostUpdate()
 {
+    ImGui::EndFrame();
     return UPDATE_CONTINUE;
 }
 

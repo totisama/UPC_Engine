@@ -40,6 +40,8 @@ bool ModuleRender::Init()
 
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	glEnable(GL_CULL_FACE); // Enable cull backward faces
+	glEnable(GL_SCISSOR_TEST);
+	glEnable(GL_STENCIL_TEST);
 	glFrontFace(GL_CCW); // Front faces will be counter clockwise
 
 	return true;
@@ -48,7 +50,7 @@ bool ModuleRender::Init()
 update_status ModuleRender::PreUpdate()
 {
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+	//glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	return UPDATE_CONTINUE;
