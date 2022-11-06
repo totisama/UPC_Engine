@@ -9,7 +9,7 @@ const char* vertexShaderSource = "#version 440\n"
 "	gl_Position = vec4(my_vertex_position, 1.0);\n"
 "}\0";
 
-const char* fragmentShaderSource = "#version 330\n"
+const char* fragmentShaderSource = "#version 440\n"
 "out vec4 color;\n"
 "void main()\n"
 "{\n"
