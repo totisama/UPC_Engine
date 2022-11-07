@@ -16,7 +16,8 @@ ModuleRenderExercise::~ModuleRenderExercise()
 // Called before render is available
 bool ModuleRenderExercise::Init()
 {	
-	const char* vertexShaderSource = App->program->LoadShaderSource("./../shaders/helloWorldVertexShader.glsl");
+	const char* vertexShaderSource = App->program->LoadShaderSource("./../shaders/uniformVertexShader.glsl");
+	//const char* vertexShaderSource = App->program->LoadShaderSource("./../shaders/helloWorldVertexShader.glsl");
 	const char* fragmentShaderSource = App->program->LoadShaderSource("./../shaders/helloWorldFragmentShader.glsl");
 
 	vertexShader = App->program->CompileShader(GL_VERTEX_SHADER, vertexShaderSource);
@@ -94,7 +95,7 @@ update_status ModuleRenderExercise::PostUpdate()
 // Called before quitting
 bool ModuleRenderExercise::CleanUp()
 {
-	glDeleteVertexArrays(1, &VAO);
+	//glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shaderProgram);
 
