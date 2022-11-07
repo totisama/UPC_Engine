@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
+#include <GL/glew.h>
 
 ModuleEditor::ModuleEditor()
 {
@@ -39,12 +40,21 @@ update_status ModuleEditor::PreUpdate()
     ImGui_ImplSDL2_NewFrame(App->window->window);
     ImGui::NewFrame();
 
+    ImGui::ShowDemoWindow();
+
+    // Console window
+    //ImGui::TextUnformatted("Enable keyboard controls.");
+
     return UPDATE_CONTINUE;
 }
 
 // Called every draw update
 update_status ModuleEditor::Update()
 {
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    //SDL_GL_SwapWindow(App->window->window);
+
     return UPDATE_CONTINUE;
 }
 
@@ -57,5 +67,9 @@ update_status ModuleEditor::PostUpdate()
 // Called before quitting
 bool ModuleEditor::CleanUp()
 {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+
     return true;
 }
