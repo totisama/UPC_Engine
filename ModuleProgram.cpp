@@ -126,18 +126,16 @@ void ModuleProgram::RenderVBO(unsigned vbo, unsigned program)
         float4x4::RotateZ(pi / 4.0f),
         float3(2.0f, 1.0f, 0.0f));
     view = float4x4::LookAt(float3(0.0f, 4.0f, 8.0f), float3(0.0f, 0.0f, 0.0f), float3::unitY, float3::unitY);
+    
+    glUseProgram(program);
+    glUniformMatrix4fv(0, 1, GL_TRUE, &model[0][0]);
+    glUniformMatrix4fv(1, 1, GL_TRUE, &view[0][0]);
+    glUniformMatrix4fv(2, 1, GL_TRUE, &proj[0][0]);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    //App->debugDraw->Draw(view, proj, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    glUseProgram(program);
-
-    glUniformMatrix4fv(0, 1, GL_TRUE, &model[0][0]);
-    glUniformMatrix4fv(1, 1, GL_TRUE, &view[0][0]);
-    glUniformMatrix4fv(2, 1, GL_TRUE, &proj[0][0]);
-
     glDrawArrays(GL_TRIANGLES, 0, 3);
+    //App->debugDraw->Draw(view, proj, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
