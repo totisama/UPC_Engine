@@ -114,28 +114,28 @@ void ModuleProgram::RenderVBO(unsigned vbo, unsigned program)
     float4x4 model, view, proj;
     Frustum frustum;
 
-    //frustum.SetKind(FrustumType::PerspectiveFrustum);
-    frustum.SetPos(float3::zero);
+    frustum.SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
+    frustum.SetPos(float3(0.0f, 3.0f, 16.0f));
     frustum.SetFront(-float3::unitZ);
     frustum.SetUp(float3::unitY);
     frustum.SetViewPlaneDistances(0.1f, 100.0f);
     frustum.SetPerspective(2.f * atanf(tanf(math::pi / 4.0f * 0.5f) * SCREEN_WIDTH / SCREEN_HEIGHT), math::pi / 4.0f);
     
     proj = frustum.ProjectionMatrix();
+    view = frustum.ViewMatrix();
     model = float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),
-        float4x4::RotateZ(pi / 4.0f),
+        float4x4::RotateZ(math::pi / 4.0f),
         float3(2.0f, 1.0f, 0.0f));
-    view = float4x4::LookAt(float3(0.0f, 4.0f, 8.0f), float3(0.0f, 0.0f, 0.0f), float3::unitY, float3::unitY);
     
     glUseProgram(program);
-    glUniformMatrix4fv(0, 1, GL_TRUE, &model[0][0]);
+    glUniformMatrix4fv(0, 1, GL_TRUE, &proj[0][0]);
     glUniformMatrix4fv(1, 1, GL_TRUE, &view[0][0]);
-    glUniformMatrix4fv(2, 1, GL_TRUE, &proj[0][0]);
+    glUniformMatrix4fv(2, 1, GL_TRUE, &model[0][0]);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
-    //App->debugDraw->Draw(view, proj, SCREEN_WIDTH, SCREEN_HEIGHT);
+    App->debugDraw->Draw(view, proj, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
