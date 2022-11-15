@@ -35,6 +35,7 @@ update_status ModuleInput::Update()
 
     while (SDL_PollEvent(&sdlEvent) != 0)
     {
+        ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
         switch (sdlEvent.type)
         {
             case SDL_QUIT:
@@ -47,7 +48,11 @@ update_status ModuleInput::Update()
     }
 
     keyboard = SDL_GetKeyboardState(NULL);
-    ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+
+    if (keyboard[SDL_SCANCODE_ESCAPE])
+    {
+        return UPDATE_STOP;
+    }
 
     return UPDATE_CONTINUE;
 }
