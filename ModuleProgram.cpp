@@ -4,7 +4,6 @@
 #include "ModuleEditorCamera.h"
 #include "ModuleDebugDraw.h"
 #include <GL/glew.h>
-#include "Game/MathGeoLib_Source/Geometry/Frustum.h"
 #include <math.h>
 
 ModuleProgram::ModuleProgram()

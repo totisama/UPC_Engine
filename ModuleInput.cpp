@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleEditorCamera.h"
 #include "ModuleRender.h"
 #include "SDL/include/SDL.h"
 #include "imgui_impl_sdl.h"
@@ -49,10 +50,52 @@ update_status ModuleInput::Update()
 
     keyboard = SDL_GetKeyboardState(NULL);
 
+    //Quit
     if (keyboard[SDL_SCANCODE_ESCAPE])
     {
         return UPDATE_STOP;
     }
+
+    int cameraSpeed = App->editorCamera->GetCameraSpeed();
+    float3 position = App->editorCamera->GetCameraPosition();
+
+    //move forward
+    if (keyboard[SDL_SCANCODE_W])
+    {   
+        position.z += cameraSpeed;
+    }
+
+    //move backward
+    if (keyboard[SDL_SCANCODE_S])
+    {
+        position.z -= cameraSpeed;
+    }
+
+    //Move right
+    if (keyboard[SDL_SCANCODE_D])
+    {
+        position.x += cameraSpeed;
+    }
+
+    //Move left
+    if (keyboard[SDL_SCANCODE_A])
+    {
+        position.x -= cameraSpeed;
+    }
+
+    //Move up
+    if (keyboard[SDL_SCANCODE_Q])
+    {
+        position.y += cameraSpeed;
+    }
+
+    //Move down
+    if (keyboard[SDL_SCANCODE_E])
+    {
+        position.y -= cameraSpeed;
+    }
+
+    //App->editorCamera->Translate(position);
 
     return UPDATE_CONTINUE;
 }

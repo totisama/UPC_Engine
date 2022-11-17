@@ -1,5 +1,6 @@
 #include "ModuleEditorCamera.h"
 #include "Application.h"
+#include "Game/MathGeoLib_Source/Geometry/Frustum.h"
 
 ModuleEditorCamera::ModuleEditorCamera()
 {
@@ -58,4 +59,24 @@ float4x4 ModuleEditorCamera::GetModelMatrix()
     return float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),
         float4x4::RotateZ(math::pi / 4.0f),
         float3(2.0f, 1.0f, 0.0f));
+}
+
+void ModuleEditorCamera::Translate(float3 position)
+{
+    frustum.SetPos(frustum.Pos() + GetViewMatrix().Float3x3Part().MulDir(position));
+}
+
+float3 ModuleEditorCamera::GetCameraPosition()
+{
+    return frustum.Pos();
+}
+
+float ModuleEditorCamera::GetCameraSpeed()
+{
+    return cameraSpeed;
+}
+
+void ModuleEditorCamera::SetCameraSpeed(float value)
+{
+    cameraSpeed = value;
 }
