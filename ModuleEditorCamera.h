@@ -1,5 +1,6 @@
 #pragma once
 #include "Module.h"
+#include "Game/MathGeoLib_Source/Geometry/Frustum.h"
 
 class ModuleEditorCamera : public Module
 {
@@ -10,10 +11,13 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	void SetFOV();
+	void SetFOV(float valor);
 	void SetAspectRatio();
 	void SetPlaneDistances();
-	void GetProjectionMatrix();
-	void GetViewMatrix();
+	float4x4 GetProjectionMatrix();
+	float4x4 GetViewMatrix();
+	float4x4 GetModelMatrix();
+
+	Frustum frustum;
 };
 

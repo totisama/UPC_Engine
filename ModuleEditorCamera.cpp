@@ -1,6 +1,5 @@
 #include "ModuleEditorCamera.h"
 #include "Application.h"
-#include "Game/MathGeoLib_Source/Geometry/Frustum.h"
 
 ModuleEditorCamera::ModuleEditorCamera()
 {
@@ -13,6 +12,14 @@ ModuleEditorCamera::~ModuleEditorCamera()
 // Called before render is available
 bool ModuleEditorCamera::Init()
 {
+    frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
+    frustum.SetViewPlaneDistances(0.1f, 200.0f);
+    frustum.SetHorizontalFovAndAspectRatio(DegToRad(90.0f), 1.3f);
+
+    frustum.SetPos(float3(0.0f, 3.0f, 16.0f));
+    frustum.SetFront(-float3::unitZ);
+    frustum.SetUp(float3::unitY);
+
     return true;
 }
 
@@ -22,8 +29,10 @@ bool ModuleEditorCamera::CleanUp()
     return true;
 }
 
-void ModuleEditorCamera::SetFOV()
+void ModuleEditorCamera::SetFOV(float valor = 90.0f)
 {
+    frustum.SetHorizontalFovAndAspectRatio(DegToRad(valor), 1.3f);
+
 }
 
 void ModuleEditorCamera::SetAspectRatio()
@@ -34,10 +43,19 @@ void ModuleEditorCamera::SetPlaneDistances()
 {
 }
 
-void ModuleEditorCamera::GetProjectionMatrix()
+float4x4 ModuleEditorCamera::GetProjectionMatrix()
 {
+    return frustum.ProjectionMatrix();
 }
 
-void ModuleEditorCamera::GetViewMatrix()
+float4x4 ModuleEditorCamera::GetViewMatrix()
 {
+    return frustum.ViewMatrix();
+}
+
+float4x4 ModuleEditorCamera::GetModelMatrix()
+{
+    return float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),
+        float4x4::RotateZ(math::pi / 4.0f),
+        float3(2.0f, 1.0f, 0.0f));
 }

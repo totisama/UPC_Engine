@@ -1,6 +1,7 @@
 #include "ModuleProgram.h"
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleEditorCamera.h"
 #include "ModuleDebugDraw.h"
 #include <GL/glew.h>
 #include "Game/MathGeoLib_Source/Geometry/Frustum.h"
@@ -111,26 +112,15 @@ unsigned ModuleProgram::CreateTriangleVBO()
 // This function must be called each frame for drawing the triangle
 void ModuleProgram::RenderVBO(unsigned vbo, unsigned program)
 {
-    float4x4 model, view, proj;
-    Frustum frustum;
+    float4x4 view, proj;
 
-    frustum.SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
-    frustum.SetPos(float3(0.0f, 3.0f, 16.0f));
-    frustum.SetFront(-float3::unitZ);
-    frustum.SetUp(float3::unitY);
-    frustum.SetViewPlaneDistances(0.1f, 100.0f);
-    frustum.SetPerspective(2.f * atanf(tanf(math::pi / 4.0f * 0.5f) * SCREEN_WIDTH / SCREEN_HEIGHT), math::pi / 4.0f);
-    
-    proj = frustum.ProjectionMatrix();
-    view = frustum.ViewMatrix();
-    model = float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),
-        float4x4::RotateZ(math::pi / 4.0f),
-        float3(2.0f, 1.0f, 0.0f));
+    proj = App->editorCamera->GetProjectionMatrix();
+    view = App->editorCamera->GetViewMatrix();
     
     glUseProgram(program);
     glUniformMatrix4fv(0, 1, GL_TRUE, &proj[0][0]);
     glUniformMatrix4fv(1, 1, GL_TRUE, &view[0][0]);
-    glUniformMatrix4fv(2, 1, GL_TRUE, &model[0][0]);
+    glUniformMatrix4fv(2, 1, GL_TRUE, &App->editorCamera->GetModelMatrix()[0][0]);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
