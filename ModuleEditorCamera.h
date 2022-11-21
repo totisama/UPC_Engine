@@ -14,7 +14,7 @@ public:
 
 	void Translate(float3 position);
 	
-	float cameraSpeed = 1.0f;
+	float cameraSpeed = 0.001f;
 	void SetFOV(float valor);
 	void SetAspectRatio();
 	void SetPlaneDistances();
@@ -23,7 +23,7 @@ public:
 	float4x4 GetViewMatrix();
 	float4x4 GetModelMatrix();
 
-	float3 GetCameraPosition();
+	void ResetCameraPosition();
 	float GetCameraSpeed();
 	void SetCameraSpeed(float value);
 
