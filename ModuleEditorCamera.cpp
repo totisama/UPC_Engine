@@ -33,7 +33,6 @@ bool ModuleEditorCamera::CleanUp()
 void ModuleEditorCamera::SetFOV(float valor = 90.0f)
 {
     frustum.SetHorizontalFovAndAspectRatio(DegToRad(valor), 1.3f);
-
 }
 
 void ModuleEditorCamera::SetAspectRatio()
@@ -63,7 +62,10 @@ float4x4 ModuleEditorCamera::GetModelMatrix()
 
 void ModuleEditorCamera::Translate(float3 position)
 {
-    frustum.SetPos(frustum.Pos() + GetViewMatrix().Float3x3Part().MulDir(position));
+    float3 currentPos = frustum.Pos();
+    float3 newPos = GetViewMatrix().Float3x3Part().MulDir(position);
+    float3 setPos = currentPos + newPos;
+    frustum.SetPos(setPos);
 }
 
 float3 ModuleEditorCamera::GetCameraPosition()

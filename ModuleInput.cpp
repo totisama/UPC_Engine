@@ -57,18 +57,18 @@ update_status ModuleInput::Update()
     }
 
     int cameraSpeed = App->editorCamera->GetCameraSpeed();
-    float3 position = App->editorCamera->GetCameraPosition();
-
-    //move forward
-    if (keyboard[SDL_SCANCODE_W])
-    {   
-        position.z += cameraSpeed;
-    }
+    float3 position(0.0f, 0.0f, 0.0f);
 
     //move backward
+    if (keyboard[SDL_SCANCODE_W])
+    {   
+        position.z -= cameraSpeed;
+    }
+
+    //move forward
     if (keyboard[SDL_SCANCODE_S])
     {
-        position.z -= cameraSpeed;
+        position.z += cameraSpeed;
     }
 
     //Move right
@@ -83,16 +83,17 @@ update_status ModuleInput::Update()
         position.x -= cameraSpeed;
     }
 
-    //Move up
+    //Move down
     if (keyboard[SDL_SCANCODE_Q])
     {
-        position.y += cameraSpeed;
+        position.y -= cameraSpeed;
     }
 
-    //Move down
+    //Move up
     if (keyboard[SDL_SCANCODE_E])
     {
-        position.y -= cameraSpeed;
+        position.y += cameraSpeed;
+        App->editorCamera->Translate(position);
     }
 
     //App->editorCamera->Translate(position);
