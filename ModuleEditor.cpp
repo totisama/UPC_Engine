@@ -5,6 +5,7 @@
 #include "imgui_impl_opengl3.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleEditorCamera.h"
 #include "ModuleRender.h"
 #include <GL/glew.h>
 
@@ -40,7 +41,7 @@ update_status ModuleEditor::PreUpdate()
     ImGui_ImplSDL2_NewFrame(App->window->window);
     ImGui::NewFrame();
 
-    ImGui::ShowDemoWindow();
+    ShowWindow();
 
     // Console window
     //ImGui::TextUnformatted("Enable keyboard controls.");
@@ -72,4 +73,21 @@ bool ModuleEditor::CleanUp()
     ImGui::DestroyContext();
 
     return true;
+}
+
+void ModuleEditor::ShowWindow()
+{
+    static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+    static float drag_f = App->editorCamera->GetCameraSpeed();
+
+    ImGui::ShowDemoWindow();
+    ImGui::Begin("Window");
+    bool resetCameraPosition = ImGui::Button("Reset position");
+    ImGui::DragFloat("Camera Speed", &drag_f, 0.0005f, 0.001f, 0.1f, "%.3f", flags);
+    ImGui::End();
+
+    if (resetCameraPosition)
+    {
+        App->editorCamera->ResetCameraPosition();
+    }
 }
