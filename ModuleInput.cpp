@@ -58,17 +58,24 @@ update_status ModuleInput::Update()
 
     float cameraSpeed = App->editorCamera->GetCameraSpeed();
     float3 position(0.0f, 0.0f, 0.0f);
+    float3 rotation(0.0f, 0.0f, 0.0f);
 
-    //move backward
-    if (keyboard[SDL_SCANCODE_W])
-    {   
-        position.z -= cameraSpeed;
+    //Duplicate speed
+    if (keyboard[SDL_SCANCODE_LSHIFT])
+    {
+        cameraSpeed *= 2;
     }
 
     //move forward
     if (keyboard[SDL_SCANCODE_S])
     {
         position.z += cameraSpeed;
+    }
+
+    //move backward
+    if (keyboard[SDL_SCANCODE_W])
+    {   
+        position.z -= cameraSpeed;
     }
 
     //Move right
@@ -94,6 +101,67 @@ update_status ModuleInput::Update()
     {
         position.y -= cameraSpeed;
     }
+
+    //Pitch
+    if (keyboard[SDL_SCANCODE_UP])
+    {
+        rotation.x -= cameraSpeed;
+        App->editorCamera->Rotate(rotation);
+    }
+    if (keyboard[SDL_SCANCODE_DOWN])
+    {
+        rotation.x -= cameraSpeed;
+    }
+
+    //Yaw
+    if (keyboard[SDL_SCANCODE_RIGHT])
+    {
+        rotation.y -= cameraSpeed;
+    }
+    if (keyboard[SDL_SCANCODE_LEFT])
+    {
+        rotation.y -= cameraSpeed;
+    }
+
+    //Mouse wheel
+    if (sdlEvent.type == SDL_MOUSEWHEEL)
+    {
+        if (sdlEvent.wheel.y > 0) // scroll up
+        {
+            position.z -= cameraSpeed * 1000;
+        }
+        else if (sdlEvent.wheel.y < 0) // scroll down
+        {
+            position.z += cameraSpeed * 1000;
+        }
+
+        if (sdlEvent.wheel.x > 0) // scroll right
+        {
+            position.x += cameraSpeed * 1000;
+        }
+        else if (sdlEvent.wheel.x < 0) // scroll left
+        {
+            position.x -= cameraSpeed * 1000;
+        }
+    }
+
+    //Mouse motion
+    /*if (sdlEvent.type == SDL_MOUSEMOTION && sdlEvent.button.button == SDL_BUTTON_LEFT)
+    {
+        if (sdlEvent.motion.yrel > 0)
+        {
+        }
+        else if (sdlEvent.motion.yrel < 0)
+        {
+        }
+
+        if (sdlEvent.motion.xrel > 0)
+        {
+        }
+        else if (sdlEvent.motion.xrel < 0)
+        {
+        }
+    }*/
 
     App->editorCamera->Translate(position);
 
