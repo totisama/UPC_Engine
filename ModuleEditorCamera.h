@@ -13,6 +13,7 @@ public:
 	bool CleanUp();
 
 	void Translate(float3 position);
+	void Rotate(float3 rotation);
 	
 	float cameraSpeed = 0.001f;
 	void SetFOV(float valor);

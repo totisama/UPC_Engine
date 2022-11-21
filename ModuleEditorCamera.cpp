@@ -1,6 +1,7 @@
 #include "ModuleEditorCamera.h"
 #include "Application.h"
 #include "Game/MathGeoLib_Source/Geometry/Frustum.h"
+//#include "Game/MathGeoLib_Source/Math/Quat.h"
 
 ModuleEditorCamera::ModuleEditorCamera()
 {
@@ -17,7 +18,7 @@ bool ModuleEditorCamera::Init()
     frustum.SetViewPlaneDistances(0.1f, 200.0f);
     frustum.SetHorizontalFovAndAspectRatio(DegToRad(90.0f), 1.3f);
 
-    frustum.SetPos(float3(0.0f, 3.0f, 16.0f));
+    frustum.SetPos(float3(0.0f, 0.0f, 0.0f));
     frustum.SetFront(-float3::unitZ);
     frustum.SetUp(float3::unitY);
 
@@ -62,15 +63,18 @@ float4x4 ModuleEditorCamera::GetModelMatrix()
 
 void ModuleEditorCamera::Translate(float3 position)
 {
-    float3 currentPos = frustum.Pos();
-    float3 newPos = GetViewMatrix().Float3x3Part().MulDir(position);
-    float3 setPos = currentPos + newPos;
-    frustum.SetPos(setPos);
+    frustum.SetPos(frustum.Pos() + float4x4(frustum.WorldMatrix()).Float3x3Part().MulDir(position));
+}
+
+void ModuleEditorCamera::Rotate(float3 rotation)
+{
+    frustum.SetFront(-float3::unitZ);
+    frustum.SetUp(float3::unitY);
 }
 
 void ModuleEditorCamera::ResetCameraPosition()
 {
-    return frustum.SetPos(float3(0.0f, 3.0f, 16.0f));
+    frustum.SetPos(float3(0.0f, 0.0f, 0.0f));
 }
 
 float ModuleEditorCamera::GetCameraSpeed()
