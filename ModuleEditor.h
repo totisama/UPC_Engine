@@ -15,4 +15,6 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	void ShowWindow();
+
 };

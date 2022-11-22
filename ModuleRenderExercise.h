@@ -16,6 +16,6 @@ public:
 	
 private:
 
-	unsigned int VAO, VBO, vertexShader, fragmentShader, shaderProgram;
+	unsigned int VBO, vertexShader, fragmentShader, shaderProgram;
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "Game/MathGeoLib_Source/Geometry/Frustum.h"
 
 typedef unsigned __int8 Uint8;
 
