@@ -105,22 +105,21 @@ update_status ModuleInput::Update()
     //Pitch
     if (keyboard[SDL_SCANCODE_UP])
     {
-        rotation.x -= cameraSpeed;
-        App->editorCamera->Rotate(rotation);
+        rotation.y += cameraSpeed;
     }
     if (keyboard[SDL_SCANCODE_DOWN])
     {
-        rotation.x -= cameraSpeed;
+        rotation.y -= cameraSpeed;
     }
 
     //Yaw
     if (keyboard[SDL_SCANCODE_RIGHT])
     {
-        rotation.y -= cameraSpeed;
+        rotation.x -= cameraSpeed;
     }
     if (keyboard[SDL_SCANCODE_LEFT])
     {
-        rotation.y -= cameraSpeed;
+        rotation.x += cameraSpeed;
     }
 
     //Mouse wheel
@@ -146,24 +145,35 @@ update_status ModuleInput::Update()
     }
 
     //Mouse motion
-    /*if (sdlEvent.type == SDL_MOUSEMOTION && sdlEvent.button.button == SDL_BUTTON_LEFT)
+    if (sdlEvent.type == SDL_MOUSEMOTION && sdlEvent.button.button == SDL_BUTTON_LEFT)
     {
-        if (sdlEvent.motion.yrel > 0)
+        //float cameraUp = App->editorCamera->GetCameraUp().y;
+        //ENGINE_LOG("UP: %f", cameraUp);
+        //Down motion
+        if (sdlEvent.motion.yrel > 0 /* && cameraUp > 0.1*/)
         {
+            rotation.y -= cameraSpeed * 10;
         }
-        else if (sdlEvent.motion.yrel < 0)
+        //Up motion
+        else if (sdlEvent.motion.yrel < 0 /* && cameraUp > 0.1*/)
         {
+            rotation.y += cameraSpeed * 10;
         }
-
+        
+        //Right motion
         if (sdlEvent.motion.xrel > 0)
         {
+            rotation.x -= cameraSpeed * 10;
         }
+        //Left motion
         else if (sdlEvent.motion.xrel < 0)
         {
+            rotation.x += cameraSpeed * 10;
         }
-    }*/
+    }
 
     App->editorCamera->Translate(position);
+    App->editorCamera->Rotate(rotation);
 
     return UPDATE_CONTINUE;
 }

@@ -25,6 +25,8 @@ public:
 	float4x4 GetModelMatrix();
 
 	void ResetCameraPosition();
+	void ResetCameraRotation();
+	float3 GetCameraUp();
 	float GetCameraSpeed();
 	void SetCameraSpeed(float value);
 

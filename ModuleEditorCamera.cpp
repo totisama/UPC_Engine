@@ -1,7 +1,7 @@
 #include "ModuleEditorCamera.h"
 #include "Application.h"
 #include "Game/MathGeoLib_Source/Geometry/Frustum.h"
-//#include "Game/MathGeoLib_Source/Math/Quat.h"
+#include "Game/MathGeoLib_Source/Math/Quat.h"
 
 ModuleEditorCamera::ModuleEditorCamera()
 {
@@ -68,13 +68,31 @@ void ModuleEditorCamera::Translate(float3 position)
 
 void ModuleEditorCamera::Rotate(float3 rotation)
 {
-    frustum.SetFront(-float3::unitZ);
-    frustum.SetUp(float3::unitY);
+    Quat yaw = Quat::RotateY(rotation.x);
+    float3 right = yaw * frustum.WorldRight();
+
+    Quat pitch = Quat::RotateAxisAngle(right, rotation.y);
+    float3 up = pitch * yaw * frustum.Up();
+    float3 front = pitch * yaw * frustum.Front();
+
+    frustum.SetUp(up);
+    frustum.SetFront(front);
 }
 
 void ModuleEditorCamera::ResetCameraPosition()
 {
     frustum.SetPos(float3(0.0f, 0.0f, 0.0f));
+}
+
+void ModuleEditorCamera::ResetCameraRotation()
+{
+    frustum.SetFront(-float3::unitZ);
+    frustum.SetUp(float3::unitY);
+}
+
+float3 ModuleEditorCamera::GetCameraUp()
+{
+    return frustum.Up();
 }
 
 float ModuleEditorCamera::GetCameraSpeed()
