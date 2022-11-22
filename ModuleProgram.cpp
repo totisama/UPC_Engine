@@ -1,6 +1,10 @@
 #include "ModuleProgram.h"
 #include "Globals.h"
+#include "Application.h"
+#include "ModuleEditorCamera.h"
+#include "ModuleDebugDraw.h"
 #include <GL/glew.h>
+#include <math.h>
 
 ModuleProgram::ModuleProgram()
 {
@@ -107,9 +111,20 @@ unsigned ModuleProgram::CreateTriangleVBO()
 // This function must be called each frame for drawing the triangle
 void ModuleProgram::RenderVBO(unsigned vbo, unsigned program)
 {
+    float4x4 view, proj;
+
+    proj = App->editorCamera->GetProjectionMatrix();
+    view = App->editorCamera->GetViewMatrix();
+    
+    glUseProgram(program);
+    glUniformMatrix4fv(0, 1, GL_TRUE, &proj[0][0]);
+    glUniformMatrix4fv(1, 1, GL_TRUE, &view[0][0]);
+    glUniformMatrix4fv(2, 1, GL_TRUE, &App->editorCamera->GetModelMatrix()[0][0]);
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glUseProgram(program);
+
     glDrawArrays(GL_TRIANGLES, 0, 3);
+    App->debugDraw->Draw(view, proj, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
