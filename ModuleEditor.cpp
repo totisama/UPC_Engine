@@ -86,9 +86,10 @@ void ModuleEditor::ShowWindow()
     {
         App->editorCamera->SetCameraSpeed(drag_f);
     }
-    if (ImGui::Button("Reset position"))
+    if (ImGui::Button("Reset camera"))
     {
         App->editorCamera->ResetCameraPosition();
+        App->editorCamera->ResetCameraRotation();
     }
     ImGui::End();
 }
