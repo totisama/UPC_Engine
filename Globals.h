@@ -17,6 +17,7 @@ enum update_status
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 #define FULLSCREEN false
+#define RESIZABLE true
 #define VSYNC true
 #define TITLE "Engine"
 #define GLSL_VERSION "#version 440"
