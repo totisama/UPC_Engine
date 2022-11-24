@@ -80,10 +80,11 @@ void ModuleEditor::ShowWindow()
 {
     static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
     static float drag_f = App->editorCamera->GetCameraSpeed();
+    //static int i2 = 42;
 
-    //ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
     ImGui::Begin("Window");
-    if (ImGui::DragFloat("Camera Speed", &drag_f, 0.0005f, 0.001f, 0.1f, "%.3f", flags))
+    if (ImGui::DragFloat("Camera Speed", &drag_f, 0.0005f, 0.001f, 0.01f, "%.3f", flags))
     {
         App->editorCamera->SetCameraSpeed(drag_f);
     }
@@ -92,5 +93,12 @@ void ModuleEditor::ShowWindow()
         App->editorCamera->ResetCameraPosition();
         App->editorCamera->ResetCameraRotation();
     }
+    /*if (ImGui::CollapsingHeader("Colors"))
+    {
+        if (ImGui::DragInt("drag int 0..100", &i2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp))
+        {
+        
+        }
+    }*/
     ImGui::End();
 }

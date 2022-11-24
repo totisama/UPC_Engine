@@ -95,6 +95,16 @@ float3 ModuleEditorCamera::GetCameraUp()
     return frustum.Up();
 }
 
+float ModuleEditorCamera::GetCameraRotationSpeed()
+{
+    return cameraRotationSpeed;
+}
+
+void ModuleEditorCamera::SetCameraRotationSpeed(float value)
+{
+    cameraRotationSpeed = value;
+}
+
 float ModuleEditorCamera::GetCameraSpeed()
 {
     return cameraSpeed;
