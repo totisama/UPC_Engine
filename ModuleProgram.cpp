@@ -119,9 +119,6 @@ unsigned ModuleProgram::CreateTriangleVBO()
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vtx_data), vtx_data, GL_STATIC_DRAW);
-       
-    //Set wireframe mode
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     return vbo;
 }
