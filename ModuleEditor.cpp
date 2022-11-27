@@ -79,6 +79,10 @@ bool ModuleEditor::CleanUp()
 void ModuleEditor::ShowWindow()
 {
     static float drag_f = App->editorCamera->GetCameraSpeed();
+    float3 cameraPosition = App->editorCamera->GetCameraPos();
+    static int xPosition = cameraPosition.x;
+    static int yPosition = cameraPosition.y;
+    static int zPosition = cameraPosition.z;
     static bool wireframeMode = false;
 
     //ImGui::ShowDemoWindow();
@@ -86,6 +90,20 @@ void ModuleEditor::ShowWindow()
     if (ImGui::DragFloat("Camera Speed", &drag_f, 0.0005f, 0.001f, 0.01f, "%.3f", ImGuiSliderFlags_None))
     {
         App->editorCamera->SetCameraSpeed(drag_f);
+    }
+    ImGui::Text("");
+    ImGui::Text("Camera position");
+    if (ImGui::DragInt("x", &xPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    {
+        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+    }
+    if (ImGui::DragInt("y", &yPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    {
+        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+    }
+    if (ImGui::DragInt("z", &zPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    {
+        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
     }
     if (ImGui::Button("Reset camera"))
     {
@@ -96,12 +114,5 @@ void ModuleEditor::ShowWindow()
     {
         App->texture->SetWireframeMode(wireframeMode);
     }
-    /*if (ImGui::CollapsingHeader("Colors"))
-    {
-        if (ImGui::DragInt("drag int 0..100", &i2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp))
-        {
-        
-        }
-    }*/
     ImGui::End();
 }
