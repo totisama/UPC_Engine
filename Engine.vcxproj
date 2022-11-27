@@ -354,6 +354,9 @@
     <None Include="Game\MathGeoLib_Source\Math\float2.inl" />
     <None Include="Game\MathGeoLib_Source\Math\Matrix.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\baboon.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
