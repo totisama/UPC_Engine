@@ -80,3 +80,13 @@ bool ModuleTexture::CleanUp()
 {
 	return true;
 }
+
+void ModuleTexture::SetWireframeMode(bool setMode)
+{
+	//Set wireframe mode
+	if (setMode) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	} else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+}
