@@ -100,6 +100,7 @@ unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader)
 unsigned ModuleProgram::CreateTriangleVBO()
 {
     //float vtx_data[] = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
+    /*
     float vtx_data[] = {
          0.5f,  0.5f, 0.0f,  // top right
          0.5f, -0.5f, 0.0f,  // bottom right
@@ -109,16 +110,29 @@ unsigned ModuleProgram::CreateTriangleVBO()
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
+    };*/
+
+    float vtx_data[] =
+    {   //     COORDINATES  /   COLORS      /   TexCoord  //
+        0.5f, 0.5f, 0.0f,     1.0f, 0.0f,    0.0f, 0.0f, 0.0f, // Lower left corner
+        0.5f, -0.5f, 0.0f,    0.0f, 1.0f,    0.0f, 0.0f, 1.0f, // Upper left corner
+       -0.5f, -0.5f, 0.0f,    0.0f, 0.0f,    1.0f, 1.0f, 1.0f, // Upper right corner
+       -0.5f, 0.5f, 0.0f,     1.0f, 1.0f,    1.0f, 1.0f, 0.0f  // Lower right corner
+    };
+
+    unsigned int indices[] = {  
+        0, 2, 1,   // first triangle
+        0, 3, 2    // second triangle
     };
     
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
     unsigned vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vtx_data), vtx_data, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     return vbo;
 }
@@ -138,7 +152,7 @@ void ModuleProgram::RenderVBO(unsigned vbo, unsigned program)
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

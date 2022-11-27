@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "DirectXTex/DirectXTex.h"
 
 class ModuleTexture : public Module
 {
@@ -15,5 +16,7 @@ public:
 	bool CleanUp();
 
 	void SetWireframeMode(bool setMode);
+
+	DirectX::ScratchImage* resultImage;
 };
 
