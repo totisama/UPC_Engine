@@ -57,8 +57,8 @@ float4x4 ModuleEditorCamera::GetViewMatrix()
 float4x4 ModuleEditorCamera::GetModelMatrix()
 {
     return float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),
-        float4x4::RotateZ(math::pi / 4.0f),
-        float3(2.0f, 1.0f, 0.0f));
+        float4x4::identity,
+        float3(1.0f));
 }
 
 void ModuleEditorCamera::Translate(float3 position)

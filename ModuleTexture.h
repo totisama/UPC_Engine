@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "DirectXTex/DirectXTex.h"
+#include "GL/glew.h"
 
 class ModuleTexture : public Module
 {
@@ -18,5 +19,6 @@ public:
 	void SetWireframeMode(bool setMode);
 
 	DirectX::ScratchImage* resultImage;
+	GLuint texture;
 };
 

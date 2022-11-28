@@ -26,7 +26,7 @@ bool ModuleTexture::Init()
 	}
 
 	HRESULT flipResult;
-	resultImage = new DirectX::ScratchImage;
+	resultImage = new DirectX::ScratchImage();
 
 	flipResult = DirectX::FlipRotate(image->GetImages(), image->GetImageCount(), image->GetMetadata(), DirectX::TEX_FR_FLIP_VERTICAL, *resultImage);
 	
@@ -37,9 +37,8 @@ bool ModuleTexture::Init()
 		return false;
 	}
 
-	GLuint texture;
 	glGenTextures(1, &texture);
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
@@ -47,11 +46,9 @@ bool ModuleTexture::Init()
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	
-	/*glActiveTexture(texture);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(float)*3*3));
-	glBindTexture(GL_TEXTURE_2D, texture_object);*/
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, resultImage->GetMetadata().width, resultImage->GetMetadata().height, 0, GL_RGBA, GL_UNSIGNED_BYTE, resultImage->GetPixels());
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	return true;
 }
@@ -64,8 +61,6 @@ update_status ModuleTexture::PreUpdate()
 // Called every draw update
 update_status ModuleTexture::Update()
 {
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, resultImage->GetMetadata().width, resultImage->GetMetadata().height, 0, GL_BGR, GL_UNSIGNED_BYTE, resultImage->GetPixels());
-	glGenerateMipmap(GL_TEXTURE_2D);
 
 	return UPDATE_CONTINUE;
 }

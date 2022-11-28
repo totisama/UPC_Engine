@@ -3,8 +3,11 @@
 #include "Application.h"
 #include "ModuleEditorCamera.h"
 #include "ModuleDebugDraw.h"
+#include "ModuleTexture.h"
+#include "ModuleWindow.h"
 #include <GL/glew.h>
 #include <math.h>
+#include "SDL.h"
 
 ModuleProgram::ModuleProgram()
 {
@@ -99,25 +102,12 @@ unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader)
 
 unsigned ModuleProgram::CreateTriangleVBO()
 {
-    //float vtx_data[] = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
-    /*
-    float vtx_data[] = {
-         0.5f,  0.5f, 0.0f,  // top right
-         0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
-    };
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    };*/
-
     float vtx_data[] =
-    {   //     COORDINATES  /   COLORS      /   TexCoord  //
-        0.5f, 0.5f, 0.0f,     1.0f, 0.0f,    0.0f, 0.0f, 0.0f, // Lower left corner
-        0.5f, -0.5f, 0.0f,    0.0f, 1.0f,    0.0f, 0.0f, 1.0f, // Upper left corner
-       -0.5f, -0.5f, 0.0f,    0.0f, 0.0f,    1.0f, 1.0f, 1.0f, // Upper right corner
-       -0.5f, 0.5f, 0.0f,     1.0f, 1.0f,    1.0f, 1.0f, 0.0f  // Lower right corner
+    {   //   COORDINATES   /   TexCoord   //
+        0.5f, 0.5f, 0.0f,    1.0f, 1.0f,  // Lower left corner
+        0.5f, -0.5f, 0.0f,   1.0f, 0.0f,  // Upper left corner
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Upper right corner
+       -0.5f, 0.5f, 0.0f,    0.0f, 1.0f,  // Lower right corner
     };
 
     unsigned int indices[] = {  
@@ -152,10 +142,21 @@ void ModuleProgram::RenderVBO(unsigned vbo, unsigned program)
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, App->texture->texture);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
-    App->debugDraw->Draw(view, proj, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    int w = SCREEN_WIDTH;
+    int h = SCREEN_HEIGHT;
+
+    SDL_GetWindowSize(App->window->window, &w, &h);
+
+    App->debugDraw->Draw(view, proj, w, h);
 }
