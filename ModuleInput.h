@@ -18,4 +18,5 @@ public:
 
 private:
 	const Uint8 *keyboard = NULL;
+	float cameraRotationSpeed;
 };

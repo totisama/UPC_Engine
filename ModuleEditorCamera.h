@@ -16,6 +16,7 @@ public:
 	void Rotate(float3 rotation);
 	
 	float cameraSpeed = 0.001f;
+	float cameraRotationSpeed = 0.001f;
 	void SetFOV(float valor);
 	void SetAspectRatio();
 	void SetPlaneDistances();
@@ -26,7 +27,13 @@ public:
 
 	void ResetCameraPosition();
 	void ResetCameraRotation();
+	void SetCameraPos(float3 position);
+	float3 GetCameraPos();
 	float3 GetCameraUp();
+
+	float GetCameraRotationSpeed();
+	void SetCameraRotationSpeed(float value);
+
 	float GetCameraSpeed();
 	void SetCameraSpeed(float value);
 

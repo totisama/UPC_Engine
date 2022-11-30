@@ -57,8 +57,8 @@ float4x4 ModuleEditorCamera::GetViewMatrix()
 float4x4 ModuleEditorCamera::GetModelMatrix()
 {
     return float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),
-        float4x4::RotateZ(math::pi / 4.0f),
-        float3(2.0f, 1.0f, 0.0f));
+        float4x4::identity,
+        float3(1.0f));
 }
 
 void ModuleEditorCamera::Translate(float3 position)
@@ -95,6 +95,16 @@ float3 ModuleEditorCamera::GetCameraUp()
     return frustum.Up();
 }
 
+float ModuleEditorCamera::GetCameraRotationSpeed()
+{
+    return cameraRotationSpeed;
+}
+
+void ModuleEditorCamera::SetCameraRotationSpeed(float value)
+{
+    cameraRotationSpeed = value;
+}
+
 float ModuleEditorCamera::GetCameraSpeed()
 {
     return cameraSpeed;
@@ -103,4 +113,14 @@ float ModuleEditorCamera::GetCameraSpeed()
 void ModuleEditorCamera::SetCameraSpeed(float value)
 {
     cameraSpeed = value;
+}
+
+void ModuleEditorCamera::SetCameraPos(float3 position)
+{
+    return frustum.SetPos(position);
+}
+
+float3 ModuleEditorCamera::GetCameraPos()
+{
+    return frustum.Pos();
 }
