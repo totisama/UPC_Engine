@@ -8,6 +8,7 @@
 #include <GL/glew.h>
 #include <math.h>
 #include "SDL.h"
+#include <assimp/scene.h>
 
 ModuleProgram::ModuleProgram()
 {
