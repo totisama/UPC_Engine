@@ -26,6 +26,8 @@ bool ModuleInput::Init()
 		ret = false;
 	}
 
+    cameraRotationSpeed = App->editorCamera->GetCameraRotationSpeed();
+
 	return ret;
 }
 
@@ -105,21 +107,21 @@ update_status ModuleInput::Update()
     //Pitch
     if (keyboard[SDL_SCANCODE_UP])
     {
-        rotation.y += cameraSpeed;
+        rotation.y += cameraRotationSpeed;
     }
     if (keyboard[SDL_SCANCODE_DOWN])
     {
-        rotation.y -= cameraSpeed;
+        rotation.y -= cameraRotationSpeed;
     }
 
     //Yaw
     if (keyboard[SDL_SCANCODE_RIGHT])
     {
-        rotation.x -= cameraSpeed;
+        rotation.x -= cameraRotationSpeed;
     }
     if (keyboard[SDL_SCANCODE_LEFT])
     {
-        rotation.x += cameraSpeed;
+        rotation.x += cameraRotationSpeed;
     }
 
     //Mouse wheel
@@ -152,23 +154,23 @@ update_status ModuleInput::Update()
         //Down motion
         if (sdlEvent.motion.yrel > 0 /* && cameraUp > 0.1*/)
         {
-            rotation.y -= cameraSpeed * 10;
+            rotation.y -= cameraRotationSpeed * 10;
         }
         //Up motion
         else if (sdlEvent.motion.yrel < 0 /* && cameraUp > 0.1*/)
         {
-            rotation.y += cameraSpeed * 10;
+            rotation.y += cameraRotationSpeed * 10;
         }
         
         //Right motion
         if (sdlEvent.motion.xrel > 0)
         {
-            rotation.x -= cameraSpeed * 10;
+            rotation.x -= cameraRotationSpeed * 10;
         }
         //Left motion
         else if (sdlEvent.motion.xrel < 0)
         {
-            rotation.x += cameraSpeed * 10;
+            rotation.x += cameraRotationSpeed * 10;
         }
     }
 

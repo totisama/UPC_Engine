@@ -3,8 +3,11 @@
 #include "Application.h"
 #include "ModuleEditorCamera.h"
 #include "ModuleDebugDraw.h"
+#include "ModuleTexture.h"
+#include "ModuleWindow.h"
 #include <GL/glew.h>
 #include <math.h>
+#include "SDL.h"
 
 ModuleProgram::ModuleProgram()
 {
@@ -99,11 +102,27 @@ unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader)
 
 unsigned ModuleProgram::CreateTriangleVBO()
 {
-    float vtx_data[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+    float vtx_data[] =
+    {   //   COORDINATES   /   TexCoord   //
+        0.5f, 0.5f, 0.0f,    1.0f, 1.0f,  // Lower left corner
+        0.5f, -0.5f, 0.0f,   1.0f, 0.0f,  // Upper left corner
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,  // Upper right corner
+       -0.5f, 0.5f, 0.0f,    0.0f, 1.0f,  // Lower right corner
+    };
+
+    unsigned int indices[] = {  
+        0, 2, 1,   // first triangle
+        0, 3, 2    // second triangle
+    };
+    
     unsigned vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vtx_data), vtx_data, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     return vbo;
 }
@@ -123,8 +142,21 @@ void ModuleProgram::RenderVBO(unsigned vbo, unsigned program)
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    App->debugDraw->Draw(view, proj, SCREEN_WIDTH, SCREEN_HEIGHT);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, App->texture->texture);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    int w = SCREEN_WIDTH;
+    int h = SCREEN_HEIGHT;
+
+    SDL_GetWindowSize(App->window->window, &w, &h);
+
+    App->debugDraw->Draw(view, proj, w, h);
 }

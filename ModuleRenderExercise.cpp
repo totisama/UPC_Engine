@@ -16,9 +16,8 @@ ModuleRenderExercise::~ModuleRenderExercise()
 // Called before render is available
 bool ModuleRenderExercise::Init()
 {	
-	const char* vertexShaderSource = App->program->LoadShaderSource("./../shaders/uniformVertexShader.glsl");
-	//const char* vertexShaderSource = App->program->LoadShaderSource("./../shaders/helloWorldVertexShader.glsl");
-	const char* fragmentShaderSource = App->program->LoadShaderSource("./../shaders/helloWorldFragmentShader.glsl");
+	const char* vertexShaderSource = App->program->LoadShaderSource("./../shaders/vertexShader.glsl");
+	const char* fragmentShaderSource = App->program->LoadShaderSource("./../shaders/fragmentShader.glsl");
 
 	vertexShader = App->program->CompileShader(GL_VERTEX_SHADER, vertexShaderSource);
 	fragmentShader = App->program->CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
@@ -37,7 +36,7 @@ update_status ModuleRenderExercise::PreUpdate()
 update_status ModuleRenderExercise::Update()
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
 
 	App->program->RenderVBO(VBO, shaderProgram);
 

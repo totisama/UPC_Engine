@@ -7,6 +7,7 @@
 #include "ModuleWindow.h"
 #include "ModuleEditorCamera.h"
 #include "ModuleRender.h"
+#include "ModuleTexture.h"
 #include <GL/glew.h>
 
 ModuleEditor::ModuleEditor()
@@ -41,8 +42,6 @@ update_status ModuleEditor::PreUpdate()
     ImGui_ImplSDL2_NewFrame(App->window->window);
     ImGui::NewFrame();
 
-    ShowWindow();
-
     // Console window
     //ImGui::TextUnformatted("Enable keyboard controls.");
 
@@ -52,6 +51,7 @@ update_status ModuleEditor::PreUpdate()
 // Called every draw update
 update_status ModuleEditor::Update()
 {
+    ShowWindow();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     //SDL_GL_SwapWindow(App->window->window);
@@ -71,25 +71,48 @@ bool ModuleEditor::CleanUp()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
+    SDL_Quit();
 
     return true;
 }
 
 void ModuleEditor::ShowWindow()
 {
-    static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
     static float drag_f = App->editorCamera->GetCameraSpeed();
+    float3 cameraPosition = App->editorCamera->GetCameraPos();
+    static int xPosition = cameraPosition.x;
+    static int yPosition = cameraPosition.y;
+    static int zPosition = cameraPosition.z;
+    static bool wireframeMode = false;
 
     //ImGui::ShowDemoWindow();
-    ImGui::Begin("Window");
-    if (ImGui::DragFloat("Camera Speed", &drag_f, 0.0005f, 0.001f, 0.1f, "%.3f", flags))
+    ImGui::Begin("Editor");
+    if (ImGui::DragFloat("Camera Speed", &drag_f, 0.0005f, 0.001f, 0.01f, "%.3f", ImGuiSliderFlags_None))
     {
         App->editorCamera->SetCameraSpeed(drag_f);
+    }
+    ImGui::Text("");
+    ImGui::Text("Camera position");
+    if (ImGui::DragInt("x", &xPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    {
+        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+    }
+    if (ImGui::DragInt("y", &yPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    {
+        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+    }
+    if (ImGui::DragInt("z", &zPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    {
+        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
     }
     if (ImGui::Button("Reset camera"))
     {
         App->editorCamera->ResetCameraPosition();
         App->editorCamera->ResetCameraRotation();
+    }
+    if (ImGui::Checkbox("Wireframe mode", &wireframeMode))
+    {
+        App->texture->SetWireframeMode(wireframeMode);
     }
     ImGui::End();
 }
