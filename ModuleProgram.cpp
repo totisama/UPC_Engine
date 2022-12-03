@@ -8,7 +8,6 @@
 #include <GL/glew.h>
 #include <math.h>
 #include "SDL.h"
-#include <assimp/scene.h>
 
 ModuleProgram::ModuleProgram()
 {
@@ -149,7 +148,7 @@ void ModuleProgram::RenderVBO(unsigned vbo, unsigned program)
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
     glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, App->texture->texture);
+    glBindTexture(GL_TEXTURE_2D, App->texture->LoadTexture("baboon.png"));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

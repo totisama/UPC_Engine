@@ -16,9 +16,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	GLuint LoadTexture(const char* fileName);
 	void SetWireframeMode(bool setMode);
-
-	DirectX::ScratchImage* resultImage;
-	GLuint texture;
 };
 
