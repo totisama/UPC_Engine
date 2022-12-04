@@ -2,7 +2,12 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleProgram.h"
+#include "ModuleRender.h"
+#include "ModuleEditorCamera.h"
+#include "ModuleWindow.h"
+#include "ModuleDebugDraw.h"
 #include <GL/glew.h>
+#include "SDL.h"
 
 ModuleRenderExercise::ModuleRenderExercise()
 {
@@ -19,10 +24,11 @@ bool ModuleRenderExercise::Init()
 	const char* vertexShaderSource = App->program->LoadShaderSource("./../shaders/vertexShader.glsl");
 	const char* fragmentShaderSource = App->program->LoadShaderSource("./../shaders/fragmentShader.glsl");
 
-	vertexShader = App->program->CompileShader(GL_VERTEX_SHADER, vertexShaderSource);
-	fragmentShader = App->program->CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-	shaderProgram = App->program->CreateProgram(vertexShader, fragmentShader);
-	VBO = App->program->CreateTriangleVBO();
+	unsigned int vertexShader = App->program->CompileShader(GL_VERTEX_SHADER, vertexShaderSource);
+	unsigned int fragmentShader = App->program->CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+	App->renderer->defaultProgram = App->program->CreateProgram(vertexShader, fragmentShader);
+
+	modelBH->LoadModel("./../Assets/Models/BakerHouse.fbx");
 
 	return true;
 }
@@ -36,10 +42,15 @@ update_status ModuleRenderExercise::PreUpdate()
 update_status ModuleRenderExercise::Update()
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT);
+	modelBH->DrawModel();
 
-	App->program->RenderVBO(VBO, shaderProgram);
+	int w = SCREEN_WIDTH;
+	int h = SCREEN_HEIGHT;
 
+	SDL_GetWindowSize(App->window->window, &w, &h);
+
+	App->debugDraw->Draw(App->editorCamera->GetViewMatrix(), App->editorCamera->GetProjectionMatrix(), w, h);
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -52,7 +63,7 @@ update_status ModuleRenderExercise::PostUpdate()
 bool ModuleRenderExercise::CleanUp()
 {
 	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shaderProgram);
+	glDeleteProgram(App->renderer->defaultProgram);
 
 	return true;
 }

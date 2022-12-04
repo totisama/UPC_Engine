@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "Model.h"
 
 class ModuleRenderExercise : public Module
 {
@@ -16,6 +17,7 @@ public:
 	
 private:
 
-	unsigned int VBO, vertexShader, fragmentShader, shaderProgram;
+	unsigned int VBO;
+	Model* modelBH = new Model();
 };
 
