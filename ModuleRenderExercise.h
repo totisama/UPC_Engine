@@ -14,10 +14,15 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
-	
-private:
 
-	unsigned int VBO;
-	Model* modelBH = new Model();
+	void SetNewModel(const char* path);
+
+	void pushAssimpLog(const char* log);
+	vector <const char*> getAssimpLogs();
+
+private:
+	Model* model = new Model();
+
+	vector<const char*> assimpLogs;
 };
 

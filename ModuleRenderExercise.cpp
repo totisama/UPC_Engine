@@ -28,7 +28,7 @@ bool ModuleRenderExercise::Init()
 	unsigned int fragmentShader = App->program->CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 	App->renderer->defaultProgram = App->program->CreateProgram(vertexShader, fragmentShader);
 
-	modelBH->LoadModel("./../Assets/Models/BakerHouse.fbx");
+	model->LoadModel("./../Assets/Models/BakerHouse.fbx");
 
 	return true;
 }
@@ -42,7 +42,7 @@ update_status ModuleRenderExercise::PreUpdate()
 update_status ModuleRenderExercise::Update()
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	modelBH->DrawModel();
+	model->DrawModel();
 
 	int w = SCREEN_WIDTH;
 	int h = SCREEN_HEIGHT;
@@ -62,8 +62,22 @@ update_status ModuleRenderExercise::PostUpdate()
 // Called before quitting
 bool ModuleRenderExercise::CleanUp()
 {
-	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(App->renderer->defaultProgram);
 
 	return true;
+}
+
+void ModuleRenderExercise::SetNewModel(const char* path)
+{
+	model->LoadModel("");
+}
+
+void ModuleRenderExercise::pushAssimpLog(const char* log)
+{
+	assimpLogs.push_back(log);
+}
+
+vector <const char*> ModuleRenderExercise::getAssimpLogs()
+{
+	return assimpLogs;
 }
