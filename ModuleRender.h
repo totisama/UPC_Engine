@@ -20,5 +20,7 @@ public:
 	void WindowResized(unsigned width, unsigned height);
 	void* context;
 
+	unsigned int defaultProgram;
+
 private:
 };

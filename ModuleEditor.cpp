@@ -7,6 +7,7 @@
 #include "ModuleWindow.h"
 #include "ModuleEditorCamera.h"
 #include "ModuleRender.h"
+#include "ModuleRenderExercise.h"
 #include "ModuleTexture.h"
 #include <GL/glew.h>
 
@@ -52,6 +53,7 @@ update_status ModuleEditor::PreUpdate()
 update_status ModuleEditor::Update()
 {
     ShowWindow();
+    ShowAssimpLogsWindow();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     //SDL_GL_SwapWindow(App->window->window);
@@ -113,6 +115,22 @@ void ModuleEditor::ShowWindow()
     if (ImGui::Checkbox("Wireframe mode", &wireframeMode))
     {
         App->texture->SetWireframeMode(wireframeMode);
+    }
+    if (ImGui::Button("Reload model"))
+    {
+        App->rendererExercise->SetNewModel("");
+    }
+    ImGui::End();
+}
+
+void ModuleEditor::ShowAssimpLogsWindow()
+{
+    vector<const char*> logs = App->rendererExercise->getAssimpLogs();
+
+    ImGui::Begin("Assimp logs");
+    for (unsigned i = 0; i < logs.size(); ++i)
+    {
+        ImGui::Text(logs[i]);
     }
     ImGui::End();
 }
