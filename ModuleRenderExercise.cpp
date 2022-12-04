@@ -21,8 +21,8 @@ ModuleRenderExercise::~ModuleRenderExercise()
 // Called before render is available
 bool ModuleRenderExercise::Init()
 {	
-	const char* vertexShaderSource = App->program->LoadShaderSource("./../shaders/vertexShader.glsl");
-	const char* fragmentShaderSource = App->program->LoadShaderSource("./../shaders/fragmentShader.glsl");
+	const char* vertexShaderSource = App->program->LoadShaderSource("./../Assets/shaders/vertexShader.glsl");
+	const char* fragmentShaderSource = App->program->LoadShaderSource("./../Assets/shaders/fragmentShader.glsl");
 
 	unsigned int vertexShader = App->program->CompileShader(GL_VERTEX_SHADER, vertexShaderSource);
 	unsigned int fragmentShader = App->program->CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
