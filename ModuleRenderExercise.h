@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "Model.h"
 
 class ModuleRenderExercise : public Module
 {
@@ -13,9 +14,15 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
-	
-private:
 
-	unsigned int VBO, vertexShader, fragmentShader, shaderProgram;
+	void SetNewModel(const char* path);
+
+	void pushAssimpLog(const char* log);
+	vector <const char*> getAssimpLogs();
+
+private:
+	Model* model = new Model();
+
+	vector<const char*> assimpLogs;
 };
 

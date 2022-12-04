@@ -15,6 +15,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+private:
 	void ShowWindow();
-
+	void ShowAssimpLogsWindow();
 };
