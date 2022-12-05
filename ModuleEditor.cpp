@@ -44,9 +44,6 @@ update_status ModuleEditor::PreUpdate()
     ImGui_ImplSDL2_NewFrame(App->window->window);
     ImGui::NewFrame();
 
-    // Console window
-    //ImGui::TextUnformatted("Enable keyboard controls.");
-
     return UPDATE_CONTINUE;
 }
 
@@ -56,7 +53,6 @@ update_status ModuleEditor::Update()
     ShowWindow();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    //SDL_GL_SwapWindow(App->window->window);
 
     return UPDATE_CONTINUE;
 }
@@ -92,12 +88,14 @@ void ModuleEditor::ShowWindow()
     static bool wireframeMode = false;
 
     SDL_version compiled;
-    SDL_version linked;
-
     SDL_VERSION(&compiled);
-    SDL_GetVersion(&linked);
-    
 
+    if (fps.size() >= 1500) {
+        fps.erase(fps.begin(), fps.begin() + 1000);
+    }
+
+    fps.emplace_back(ImGui::GetIO().Framerate);
+    
     //ImGui::ShowDemoWindow();
     ImGui::Begin("Editor");
     if (ImGui::DragFloat("Camera Speed", &drag_f, 0.0005f, 0.001f, 0.01f, "%.3f", ImGuiSliderFlags_None))
@@ -127,10 +125,6 @@ void ModuleEditor::ShowWindow()
     {
         App->texture->SetWireframeMode(wireframeMode);
     }
-    if (ImGui::Button("Reload model"))
-    {
-        App->rendererExercise->SetNewModel("./../Assets/Models/BakerHouse.fbx");
-    }
     if (ImGui::CollapsingHeader("Current Model"))
     {
         //ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Triangle count %u", 10);
@@ -141,7 +135,9 @@ void ModuleEditor::ShowWindow()
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "OpenGL version %s", glGetString(GL_VERSION));
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "SDL version %u.%u.%u", compiled.major, compiled.minor, compiled.patch);
         ImGui::Separator();
-        ImGui::TextColored(ImVec4(0.1f, 0.5f, 0.5f, 1.00f), "%.1f FPS", ImGui::GetIO().Framerate);
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Frames Per Second");
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "%.1f FPS", ImGui::GetIO().Framerate);
+        ImGui::PlotHistogram("", &fps[0], 1500, 0, "", 0.0f, 5000.0f, ImVec2(350.0f, 100.0f), 0);
     }
     if (ImGui::CollapsingHeader("Assimp logs"))
     {
