@@ -63,13 +63,15 @@ update_status ModuleRenderExercise::PostUpdate()
 bool ModuleRenderExercise::CleanUp()
 {
 	glDeleteProgram(App->renderer->defaultProgram);
+	delete model;
 
 	return true;
 }
 
 void ModuleRenderExercise::SetNewModel(const char* path)
 {
-	model->LoadModel("");
+	model = new Model();
+	model->LoadModel(path);
 }
 
 void ModuleRenderExercise::pushAssimpLog(const char* log)
