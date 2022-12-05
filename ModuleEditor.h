@@ -17,5 +17,4 @@ public:
 
 private:
 	void ShowWindow();
-	void ShowAssimpLogsWindow();
 };

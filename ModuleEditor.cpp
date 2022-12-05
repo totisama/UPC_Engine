@@ -26,8 +26,9 @@ bool ModuleEditor::Init()
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiWindowFlags_AlwaysAutoResize;
 
     ImGui::StyleColorsDark();
 
@@ -53,7 +54,6 @@ update_status ModuleEditor::PreUpdate()
 update_status ModuleEditor::Update()
 {
     ShowWindow();
-    ShowAssimpLogsWindow();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     //SDL_GL_SwapWindow(App->window->window);
@@ -73,6 +73,9 @@ bool ModuleEditor::CleanUp()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
+
+    SDL_GL_DeleteContext(App->renderer->context);
+    SDL_DestroyWindow(App->window->window);
     SDL_Quit();
 
     return true;
@@ -82,10 +85,18 @@ void ModuleEditor::ShowWindow()
 {
     static float drag_f = App->editorCamera->GetCameraSpeed();
     float3 cameraPosition = App->editorCamera->GetCameraPos();
-    static int xPosition = cameraPosition.x;
-    static int yPosition = cameraPosition.y;
-    static int zPosition = cameraPosition.z;
+    vector<const char*> logs = App->rendererExercise->getAssimpLogs();
+    static float xPosition = cameraPosition.x;
+    static float yPosition = cameraPosition.y;
+    static float zPosition = cameraPosition.z;
     static bool wireframeMode = false;
+
+    SDL_version compiled;
+    SDL_version linked;
+
+    SDL_VERSION(&compiled);
+    SDL_GetVersion(&linked);
+    
 
     //ImGui::ShowDemoWindow();
     ImGui::Begin("Editor");
@@ -95,15 +106,15 @@ void ModuleEditor::ShowWindow()
     }
     ImGui::Text("");
     ImGui::Text("Camera position");
-    if (ImGui::DragInt("x", &xPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    if (ImGui::DragFloat("x", &xPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
     {
         App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
     }
-    if (ImGui::DragInt("y", &yPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    if (ImGui::DragFloat("y", &yPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
     {
         App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
     }
-    if (ImGui::DragInt("z", &zPosition, 0.05f, -100, 100, "%d", ImGuiSliderFlags_None))
+    if (ImGui::DragFloat("z", &zPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
     {
         App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
     }
@@ -118,19 +129,26 @@ void ModuleEditor::ShowWindow()
     }
     if (ImGui::Button("Reload model"))
     {
-        App->rendererExercise->SetNewModel("");
+        App->rendererExercise->SetNewModel("./../Assets/Models/BakerHouse.fbx");
     }
-    ImGui::End();
-}
-
-void ModuleEditor::ShowAssimpLogsWindow()
-{
-    vector<const char*> logs = App->rendererExercise->getAssimpLogs();
-
-    ImGui::Begin("Assimp logs");
-    for (unsigned i = 0; i < logs.size(); ++i)
+    if (ImGui::CollapsingHeader("Current Model"))
     {
-        ImGui::Text(logs[i]);
+        //ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Triangle count %u", 10);
+        //ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), " texture size %u", 10);
+    }
+    if (ImGui::CollapsingHeader("About"))
+    {
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "OpenGL version %s", glGetString(GL_VERSION));
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "SDL version %u.%u.%u", compiled.major, compiled.minor, compiled.patch);
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.1f, 0.5f, 0.5f, 1.00f), "%.1f FPS", ImGui::GetIO().Framerate);
+    }
+    if (ImGui::CollapsingHeader("Assimp logs"))
+    {
+        for (unsigned i = 0; i < logs.size(); ++i)
+        {
+            ImGui::Text(logs[i]);
+        }
     }
     ImGui::End();
 }
