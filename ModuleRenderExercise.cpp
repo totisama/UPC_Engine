@@ -85,3 +85,8 @@ vector <const char*> ModuleRenderExercise::getAssimpLogs()
 {
 	return assimpLogs;
 }
+
+Model* ModuleRenderExercise::GetCurrentModel()
+{
+	return model;
+}
