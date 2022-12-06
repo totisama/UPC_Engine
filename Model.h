@@ -17,9 +17,16 @@ public:
 	void LoadMaterials(const aiScene* scene);
 	void LoadMeshes(aiMesh** arrayMeshes, int totalMeshes);
 	void DrawModel();
+	std::string GetModelName();
+	vector<Mesh*> GetMeshes();
+	vector<GLuint> GetMaterials();
+	vector<std::string> GetMaterialsNames();
 
 private:
 	vector<GLuint> materials;
-	list<Mesh*> meshes;
+	vector<std::string> materialsNames;
+	vector<Mesh*> meshes;
+
+	std::string modelName = "";
 };
 

@@ -102,8 +102,7 @@ void ModuleEditor::ShowWindow()
     {
         App->editorCamera->SetCameraSpeed(drag_f);
     }
-    ImGui::Text("");
-    ImGui::Text("Camera position");
+    /*ImGui::Text("Camera position");
     if (ImGui::DragFloat("x", &xPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
     {
         App->editorCamera->SetCameraPosition(float3(xPosition, yPosition, zPosition));
@@ -115,7 +114,7 @@ void ModuleEditor::ShowWindow()
     if (ImGui::DragFloat("z", &zPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
     {
         App->editorCamera->SetCameraPosition(float3(xPosition, yPosition, zPosition));
-    }
+    }*/
     if (ImGui::Button("Reset camera"))
     {
         App->editorCamera->ResetCameraPosition();
@@ -127,17 +126,44 @@ void ModuleEditor::ShowWindow()
     }
     if (ImGui::CollapsingHeader("Current Model"))
     {
-        //ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Triangle count %u", 10);
-        //ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), " texture size %u", 10);
+        vector<Mesh*> meshes = App->rendererExercise->GetCurrentModel()->GetMeshes();
+        vector<GLuint> textures = App->rendererExercise->GetCurrentModel()->GetMaterials();
+        vector<std::string> texturesNames = App->rendererExercise->GetCurrentModel()->GetMaterialsNames();
+
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Name: %s", App->rendererExercise->GetCurrentModel()->GetModelName().c_str());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Number of Meshes: %u", meshes.size());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Number of Textures: %u", textures.size());
+        ImGui::Separator();
+
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Meshes:");
+        for (int i = 0; i < meshes.size(); i++)
+        {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Mesh %u", i+1);
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Indices count: %u", meshes[i]->num_indices);
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Vertices count: %u", meshes[i]->num_vertices);
+            ImGui::Text("");
+        }
+
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Textures:");
+        for (int j = 0; j < textures.size(); j++)
+        {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Texture ID-Name: %u - %s", textures[j], texturesNames[j].c_str());
+            ImGui::Image((void*)(intptr_t)textures[j], ImVec2(75, 75));
+            ImGui::Text("");
+        }
     }
     if (ImGui::CollapsingHeader("About"))
     {
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Platform: %s", SDL_GetPlatform());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "CPUs: %u", SDL_GetCPUCount());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "RAM: %u GB", SDL_GetSystemRAM()/1000);
+        ImGui::Separator();
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "OpenGL version %s", glGetString(GL_VERSION));
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "SDL version %u.%u.%u", compiled.major, compiled.minor, compiled.patch);
         ImGui::Separator();
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Frames Per Second");
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "%.1f FPS", ImGui::GetIO().Framerate);
-        ImGui::PlotHistogram("", &fps[0], 1500, 0, "", 0.0f, 5000.0f, ImVec2(350.0f, 100.0f), 0);
+        ImGui::PlotHistogram("", &fps[0], 1500, 0, "", 0.0f, 4000.0f, ImVec2(350.0f, 100.0f), 0);
     }
     if (ImGui::CollapsingHeader("Assimp logs"))
     {
