@@ -27,7 +27,7 @@ public:
 
 	void ResetCameraPosition();
 	void ResetCameraRotation();
-	void SetCameraPos(float3 position);
+	void SetCameraPosition(float3 position);
 	float3 GetCameraPos();
 	float3 GetCameraUp();
 

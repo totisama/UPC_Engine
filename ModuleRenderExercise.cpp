@@ -70,8 +70,10 @@ bool ModuleRenderExercise::CleanUp()
 
 void ModuleRenderExercise::SetNewModel(const char* path)
 {
+	delete model;
 	model = new Model();
 	model->LoadModel(path);
+	//App->editorCamera->SetCameraPosition();
 }
 
 void ModuleRenderExercise::pushAssimpLog(const char* log)
