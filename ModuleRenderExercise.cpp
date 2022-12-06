@@ -28,7 +28,7 @@ bool ModuleRenderExercise::Init()
 	unsigned int fragmentShader = App->program->CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 	App->renderer->defaultProgram = App->program->CreateProgram(vertexShader, fragmentShader);
 
-	model->LoadModel("./../Assets/Models/BakerHouse.fbx");
+	SetNewModel("./../Assets/Models/BakerHouse.fbx");
 
 	return true;
 }
