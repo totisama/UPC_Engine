@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include <vector>
 
 class ModuleEditor : public Module
 {
@@ -17,5 +18,6 @@ public:
 
 private:
 	void ShowWindow();
-	void ShowAssimpLogsWindow();
+
+	std::vector<float> fps;
 };

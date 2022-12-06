@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleEditorCamera.h"
 #include "ModuleRender.h"
+#include "ModuleRenderExercise.h"
 #include "SDL/include/SDL.h"
 #include "imgui_impl_sdl.h"
 
@@ -46,6 +47,9 @@ update_status ModuleInput::Update()
             case SDL_WINDOWEVENT:
                 if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
                     App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
+                break;
+            case SDL_DROPFILE:
+                App->rendererExercise->SetNewModel(sdlEvent.drop.file);
                 break;
         }
     }

@@ -21,7 +21,7 @@ public:
 	vector <const char*> getAssimpLogs();
 
 private:
-	Model* model = new Model();
+	Model* model = nullptr;
 
 	vector<const char*> assimpLogs;
 };
