@@ -28,7 +28,7 @@ bool ModuleRenderExercise::Init()
 	unsigned int fragmentShader = App->program->CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 	App->renderer->defaultProgram = App->program->CreateProgram(vertexShader, fragmentShader);
 
-	model->LoadModel("./../Assets/Models/BakerHouse.fbx");
+	SetNewModel("./../Assets/Models/BakerHouse.fbx");
 
 	return true;
 }
@@ -63,13 +63,15 @@ update_status ModuleRenderExercise::PostUpdate()
 bool ModuleRenderExercise::CleanUp()
 {
 	glDeleteProgram(App->renderer->defaultProgram);
+	delete model;
 
 	return true;
 }
 
 void ModuleRenderExercise::SetNewModel(const char* path)
 {
-	model->LoadModel("");
+	model = new Model();
+	model->LoadModel(path);
 }
 
 void ModuleRenderExercise::pushAssimpLog(const char* log)

@@ -1,4 +1,6 @@
 #include "ModuleTexture.h"
+#include "Application.h"
+#include "ModuleRenderExercise.h"
 #include "GL/glew.h"
 #include "DirectXTex/DirectXTex.h"
 #include <string>
@@ -73,7 +75,8 @@ GLuint ModuleTexture::LoadTexture(const char* fileName)
 
 			if (FAILED(hResult))
 			{
-				ENGINE_LOG("Error loading the texture");
+				ENGINE_LOG("Error loading the texture %s ", fileName);
+				App->rendererExercise->pushAssimpLog(("Error loading the texture %s ", fileName));
 
 				return false;
 			}
@@ -87,6 +90,7 @@ GLuint ModuleTexture::LoadTexture(const char* fileName)
 	if (FAILED(hResult))
 	{
 		ENGINE_LOG("Error fliping the image");
+		App->rendererExercise->pushAssimpLog("Error fliping the image");
 
 		return false;
 	}
