@@ -115,9 +115,9 @@ void ModuleEditorCamera::SetCameraSpeed(float value)
     cameraSpeed = value;
 }
 
-void ModuleEditorCamera::SetCameraPos(float3 position)
+void ModuleEditorCamera::SetCameraPosition(float3 position)
 {
-    return frustum.SetPos(position);
+    frustum.SetPos(position);
 }
 
 float3 ModuleEditorCamera::GetCameraPos()

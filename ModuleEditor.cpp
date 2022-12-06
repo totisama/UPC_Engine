@@ -106,15 +106,15 @@ void ModuleEditor::ShowWindow()
     ImGui::Text("Camera position");
     if (ImGui::DragFloat("x", &xPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
     {
-        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+        App->editorCamera->SetCameraPosition(float3(xPosition, yPosition, zPosition));
     }
     if (ImGui::DragFloat("y", &yPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
     {
-        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+        App->editorCamera->SetCameraPosition(float3(xPosition, yPosition, zPosition));
     }
     if (ImGui::DragFloat("z", &zPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
     {
-        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+        App->editorCamera->SetCameraPosition(float3(xPosition, yPosition, zPosition));
     }
     if (ImGui::Button("Reset camera"))
     {
