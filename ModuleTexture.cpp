@@ -58,17 +58,22 @@ GLuint ModuleTexture::LoadTexture(const char* fileName, string modelPath)
 {
 	DirectX::ScratchImage image = DirectX::ScratchImage();
 
-	string texturePath;
+	App->rendererExercise->pushAssimpLog(("Searching texture %s on:", fileName));
+	App->rendererExercise->pushAssimpLog("FBX path...");
+
 	HRESULT hResult = TestTexturePath(string(fileName), image);
 
 	if (FAILED(hResult))
 	{
+		string texturePath;
 		texturePath = modelPath + string(fileName);
+		App->rendererExercise->pushAssimpLog("FBX folder...");
 		hResult = TestTexturePath(texturePath, image);
 
 		if (FAILED(hResult))
 		{
 			texturePath = "./../Assets/Textures/" + string(fileName);
+			App->rendererExercise->pushAssimpLog("Texture folder...");
 			hResult = TestTexturePath(texturePath, image);
 
 			if (FAILED(hResult))
@@ -81,14 +86,16 @@ GLuint ModuleTexture::LoadTexture(const char* fileName, string modelPath)
 		}
 	}
 
+	App->rendererExercise->pushAssimpLog("Texture finded!");
+
 	DirectX::ScratchImage* resultImage = new DirectX::ScratchImage();
 
 	hResult = DirectX::FlipRotate(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FR_FLIP_VERTICAL, *resultImage);
 
 	if (FAILED(hResult))
 	{
-		ENGINE_LOG("Error fliping the image");
-		App->rendererExercise->pushAssimpLog("Error fliping the image");
+		ENGINE_LOG("Error fliping the texture %s", fileName);
+		App->rendererExercise->pushAssimpLog(("Error fliping the texture %s", fileName));
 
 		return false;
 	}
