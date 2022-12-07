@@ -5,6 +5,7 @@
 #include "DirectXTex/DirectXTex.h"
 #include <string>
 
+using namespace std;
 
 ModuleTexture::ModuleTexture()
 {
@@ -53,25 +54,22 @@ void ModuleTexture::SetWireframeMode(bool setMode)
 	}
 }
 
-GLuint ModuleTexture::LoadTexture(const char* fileName)
+GLuint ModuleTexture::LoadTexture(const char* fileName, string modelPath)
 {
-	std::string textPath = "./../Assets/Textures/" + std::string(fileName);
-	std::string narrowString(textPath);
-	std::wstring wideString = std::wstring(narrowString.begin(), narrowString.end());
-	const wchar_t* path = wideString.c_str();
+	DirectX::ScratchImage image = DirectX::ScratchImage();
 
-	DirectX::ScratchImage* image = new DirectX::ScratchImage();
-
-	HRESULT hResult;
-	hResult = DirectX::LoadFromDDSFile(path, DirectX::DDS_FLAGS_NONE, nullptr, *image);
+	string texturePath;
+	HRESULT hResult = TestTexturePath(string(fileName), image);
 
 	if (FAILED(hResult))
 	{
-		hResult = DirectX::LoadFromTGAFile(path, DirectX::TGA_FLAGS_NONE, nullptr, *image);
+		texturePath = modelPath + string(fileName);
+		hResult = TestTexturePath(texturePath, image);
 
 		if (FAILED(hResult))
 		{
-			hResult = DirectX::LoadFromWICFile(path, DirectX::WIC_FLAGS_NONE, nullptr, *image);
+			texturePath = "./../Assets/Textures/" + string(fileName);
+			hResult = TestTexturePath(texturePath, image);
 
 			if (FAILED(hResult))
 			{
@@ -85,7 +83,7 @@ GLuint ModuleTexture::LoadTexture(const char* fileName)
 
 	DirectX::ScratchImage* resultImage = new DirectX::ScratchImage();
 
-	hResult = DirectX::FlipRotate(image->GetImages(), image->GetImageCount(), image->GetMetadata(), DirectX::TEX_FR_FLIP_VERTICAL, *resultImage);
+	hResult = DirectX::FlipRotate(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FR_FLIP_VERTICAL, *resultImage);
 
 	if (FAILED(hResult))
 	{
@@ -111,4 +109,25 @@ GLuint ModuleTexture::LoadTexture(const char* fileName)
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	return texture;
+}
+
+HRESULT ModuleTexture::TestTexturePath(string path, DirectX::ScratchImage& image)
+{
+	wstring wideString = wstring(path.begin(), path.end());
+	const wchar_t* testPath = wideString.c_str();
+
+	HRESULT hResult;
+	hResult = DirectX::LoadFromDDSFile(testPath, DirectX::DDS_FLAGS_NONE, nullptr, image);
+
+	if (FAILED(hResult))
+	{
+		hResult = DirectX::LoadFromTGAFile(testPath, DirectX::TGA_FLAGS_NONE, nullptr, image);
+
+		if (FAILED(hResult))
+		{
+			hResult = DirectX::LoadFromWICFile(testPath, DirectX::WIC_FLAGS_NONE, nullptr, image);
+		}
+	}
+	
+	return hResult;
 }
