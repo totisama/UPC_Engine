@@ -5,6 +5,7 @@
 #include "DirectXTex/DirectXTex.h"
 #include <string>
 
+using namespace std;
 
 ModuleTexture::ModuleTexture()
 {
@@ -53,25 +54,44 @@ void ModuleTexture::SetWireframeMode(bool setMode)
 	}
 }
 
-GLuint ModuleTexture::LoadTexture(const char* fileName)
+GLuint ModuleTexture::LoadTexture(const char* fileName, string modelPath)
 {
-	std::string textPath = "./../Assets/Textures/" + std::string(fileName);
-	std::string narrowString(textPath);
-	std::wstring wideString = std::wstring(narrowString.begin(), narrowString.end());
-	const wchar_t* path = wideString.c_str();
+	string fileNameString = fileName;
 
-	DirectX::ScratchImage* image = new DirectX::ScratchImage();
+	std::size_t lastIndex = fileNameString.find_last_of("/");
 
-	HRESULT hResult;
-	hResult = DirectX::LoadFromDDSFile(path, DirectX::DDS_FLAGS_NONE, nullptr, *image);
+	if (lastIndex != std::string::npos)
+	{
+		fileNameString = fileNameString.substr(lastIndex + 1);
+	} else {
+		lastIndex = fileNameString.find_last_of("\\/");
+
+		if (lastIndex != std::string::npos)
+		{
+			fileNameString = fileNameString.substr(lastIndex + 1);
+		}
+	}
+
+
+	DirectX::ScratchImage image = DirectX::ScratchImage();
+
+	App->rendererExercise->pushAssimpLog("Searching texture on:");
+	App->rendererExercise->pushAssimpLog("	FBX path...");
+
+	HRESULT hResult = TestTexturePath(fileNameString, image);
 
 	if (FAILED(hResult))
 	{
-		hResult = DirectX::LoadFromTGAFile(path, DirectX::TGA_FLAGS_NONE, nullptr, *image);
+		string texturePath;
+		texturePath = modelPath + fileNameString;
+		App->rendererExercise->pushAssimpLog("	FBX folder...");
+		hResult = TestTexturePath(texturePath, image);
 
 		if (FAILED(hResult))
 		{
-			hResult = DirectX::LoadFromWICFile(path, DirectX::WIC_FLAGS_NONE, nullptr, *image);
+			texturePath = "./../Assets/Textures/" + fileNameString;
+			App->rendererExercise->pushAssimpLog("	Texture folder...");
+			hResult = TestTexturePath(texturePath, image);
 
 			if (FAILED(hResult))
 			{
@@ -83,14 +103,16 @@ GLuint ModuleTexture::LoadTexture(const char* fileName)
 		}
 	}
 
+	App->rendererExercise->pushAssimpLog("Texture finded!");
+
 	DirectX::ScratchImage* resultImage = new DirectX::ScratchImage();
 
-	hResult = DirectX::FlipRotate(image->GetImages(), image->GetImageCount(), image->GetMetadata(), DirectX::TEX_FR_FLIP_VERTICAL, *resultImage);
+	hResult = DirectX::FlipRotate(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FR_FLIP_VERTICAL, *resultImage);
 
 	if (FAILED(hResult))
 	{
-		ENGINE_LOG("Error fliping the image");
-		App->rendererExercise->pushAssimpLog("Error fliping the image");
+		ENGINE_LOG("Error fliping the texture %s", fileName);
+		App->rendererExercise->pushAssimpLog(("Error fliping the texture %s", fileName));
 
 		return false;
 	}
@@ -111,4 +133,25 @@ GLuint ModuleTexture::LoadTexture(const char* fileName)
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	return texture;
+}
+
+HRESULT ModuleTexture::TestTexturePath(string path, DirectX::ScratchImage& image)
+{
+	wstring wideString = wstring(path.begin(), path.end());
+	const wchar_t* testPath = wideString.c_str();
+
+	HRESULT hResult;
+	hResult = DirectX::LoadFromDDSFile(testPath, DirectX::DDS_FLAGS_NONE, nullptr, image);
+
+	if (FAILED(hResult))
+	{
+		hResult = DirectX::LoadFromTGAFile(testPath, DirectX::TGA_FLAGS_NONE, nullptr, image);
+
+		if (FAILED(hResult))
+		{
+			hResult = DirectX::LoadFromWICFile(testPath, DirectX::WIC_FLAGS_NONE, nullptr, image);
+		}
+	}
+	
+	return hResult;
 }

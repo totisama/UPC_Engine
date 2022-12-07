@@ -17,9 +17,9 @@ public:
 	
 	float cameraSpeed = 0.001f;
 	float cameraRotationSpeed = 0.001f;
-	void SetFOV(float valor);
-	void SetAspectRatio();
-	void SetPlaneDistances();
+	float GetFOV();
+	void SetFOV(float value);
+	void SetAspectRatio(float aspect);
 
 	float4x4 GetProjectionMatrix();
 	float4x4 GetViewMatrix();
