@@ -58,20 +58,17 @@ GLuint ModuleTexture::LoadTexture(const char* fileName, string modelPath)
 {
 	string fileNameString = fileName;
 
-	std::size_t lastIndex = fileNameString.find_last_of("/");
+	std::size_t lastIndexSlash = fileNameString.find_last_of("/");
+	std::size_t lastIndexBSlash = fileNameString.find_last_of("\\/");
 
-	if (lastIndex != std::string::npos)
+	if (lastIndexSlash != std::string::npos)
 	{
-		fileNameString = fileNameString.substr(lastIndex + 1);
-	} else {
-		lastIndex = fileNameString.find_last_of("\\/");
-
-		if (lastIndex != std::string::npos)
-		{
-			fileNameString = fileNameString.substr(lastIndex + 1);
-		}
+		fileNameString = fileNameString.substr(lastIndexSlash + 1);
 	}
-
+	else if (lastIndexBSlash != std::string::npos) 
+	{
+		fileNameString = fileNameString.substr(lastIndexBSlash + 1);
+	}
 
 	DirectX::ScratchImage image = DirectX::ScratchImage();
 

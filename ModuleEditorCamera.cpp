@@ -41,6 +41,26 @@ void ModuleEditorCamera::SetFOV(float value)
     frustum.SetPerspective(value, frustum.VerticalFov());
 }
 
+float ModuleEditorCamera::GetNearPlane()
+{
+    return frustum.NearPlaneDistance();
+}
+
+void ModuleEditorCamera::SetNearPlane(float value)
+{
+    frustum.SetViewPlaneDistances(value, frustum.FarPlaneDistance());
+}
+
+float ModuleEditorCamera::GetFarPlane()
+{
+    return frustum.FarPlaneDistance();
+}
+
+void ModuleEditorCamera::SetFarPlane(float value)
+{
+    frustum.SetViewPlaneDistances(frustum.NearPlaneDistance(), value);
+}
+
 void ModuleEditorCamera::SetAspectRatio(float aspect)
 {
     frustum.SetHorizontalFovAndAspectRatio(frustum.HorizontalFov(), aspect);

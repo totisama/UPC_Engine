@@ -16,10 +16,12 @@ public:
 	bool CleanUp();
 
 	void SetNewModel(const char* path);
+
 	void pushAssimpLog(const char* log);
+	vector <const char*> getAssimpLogs();
+	void resetAssimpLog();
 
 	Model *GetCurrentModel();
-	vector <const char*> getAssimpLogs();
 
 private:
 	Model* model = nullptr;
