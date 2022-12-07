@@ -31,17 +31,19 @@ bool ModuleEditorCamera::CleanUp()
     return true;
 }
 
-void ModuleEditorCamera::SetFOV(float valor = 90.0f)
+float ModuleEditorCamera::GetFOV()
 {
-    frustum.SetHorizontalFovAndAspectRatio(DegToRad(valor), 1.3f);
+    return frustum.HorizontalFov();
 }
 
-void ModuleEditorCamera::SetAspectRatio()
+void ModuleEditorCamera::SetFOV(float value)
 {
+    frustum.SetPerspective(value, frustum.VerticalFov());
 }
 
-void ModuleEditorCamera::SetPlaneDistances()
+void ModuleEditorCamera::SetAspectRatio(float aspect)
 {
+    frustum.SetHorizontalFovAndAspectRatio(frustum.HorizontalFov(), aspect);
 }
 
 float4x4 ModuleEditorCamera::GetProjectionMatrix()
