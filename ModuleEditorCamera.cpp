@@ -90,6 +90,7 @@ void ModuleEditorCamera::ResetCameraRotation()
 {
     frustum.SetFront(-float3::unitZ);
     frustum.SetUp(float3::unitY);
+    frustum.SetHorizontalFovAndAspectRatio(DegToRad(90.0f), 1.3f);
 }
 
 float3 ModuleEditorCamera::GetCameraUp()
