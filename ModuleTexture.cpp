@@ -56,24 +56,41 @@ void ModuleTexture::SetWireframeMode(bool setMode)
 
 GLuint ModuleTexture::LoadTexture(const char* fileName, string modelPath)
 {
+	string fileNameString = fileName;
+
+	std::size_t lastIndex = fileNameString.find_last_of("/");
+
+	if (lastIndex != std::string::npos)
+	{
+		fileNameString = fileNameString.substr(lastIndex + 1);
+	} else {
+		lastIndex = fileNameString.find_last_of("\\/");
+
+		if (lastIndex != std::string::npos)
+		{
+			fileNameString = fileNameString.substr(lastIndex + 1);
+		}
+	}
+
+
 	DirectX::ScratchImage image = DirectX::ScratchImage();
 
-	App->rendererExercise->pushAssimpLog(("Searching texture %s on:", fileName));
-	App->rendererExercise->pushAssimpLog("FBX path...");
+	App->rendererExercise->pushAssimpLog("Searching texture on:");
+	App->rendererExercise->pushAssimpLog("	FBX path...");
 
-	HRESULT hResult = TestTexturePath(string(fileName), image);
+	HRESULT hResult = TestTexturePath(fileNameString, image);
 
 	if (FAILED(hResult))
 	{
 		string texturePath;
-		texturePath = modelPath + string(fileName);
-		App->rendererExercise->pushAssimpLog("FBX folder...");
+		texturePath = modelPath + fileNameString;
+		App->rendererExercise->pushAssimpLog("	FBX folder...");
 		hResult = TestTexturePath(texturePath, image);
 
 		if (FAILED(hResult))
 		{
-			texturePath = "./../Assets/Textures/" + string(fileName);
-			App->rendererExercise->pushAssimpLog("Texture folder...");
+			texturePath = "./../Assets/Textures/" + fileNameString;
+			App->rendererExercise->pushAssimpLog("	Texture folder...");
 			hResult = TestTexturePath(texturePath, image);
 
 			if (FAILED(hResult))
