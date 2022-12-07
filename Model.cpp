@@ -67,6 +67,9 @@ void Model::LoadMaterials(const aiScene* scene)
 		{
 			materials.push_back(App->texture->LoadTexture(file.data, currentPath));
 			materialsNames.push_back((std::string)file.data);
+		} else {
+			ENGINE_LOG("Error loading the texture");
+			App->rendererExercise->pushAssimpLog("Error loading the texture");
 		}
 	}
 }

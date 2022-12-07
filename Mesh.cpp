@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "Application.h"
 #include "ModuleRender.h"
+#include "ModuleRenderExercise.h"
 #include "ModuleEditorCamera.h"
 #include "GL/glew.h"
 #include "Game/MathGeoLib_Source/Math/float2.h"
@@ -41,6 +42,7 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	num_vertices = mesh->mNumVertices;
+	App->rendererExercise->pushAssimpLog("Vertex Buffer Object loaded");
 }
 
 void Mesh::LoadEBO(const aiMesh* mesh)
@@ -62,6 +64,7 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 
 	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 	num_indices = mesh->mNumFaces * 3;
+	App->rendererExercise->pushAssimpLog("Element Buffer Object loaded");
 }
 
 void Mesh::CreateVAO()
@@ -77,6 +80,7 @@ void Mesh::CreateVAO()
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(float) * 3 * num_vertices));
+	App->rendererExercise->pushAssimpLog("Vertex Array Object created");
 }
 
 void Mesh::DrawMesh(const std::vector<unsigned>& model_textures)

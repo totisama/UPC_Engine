@@ -49,6 +49,8 @@ update_status ModuleInput::Update()
                     App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
                 break;
             case SDL_DROPFILE:
+                App->rendererExercise->resetAssimpLog();
+                App->rendererExercise->pushAssimpLog("File dropped");
                 App->rendererExercise->SetNewModel(sdlEvent.drop.file);
                 break;
         }
