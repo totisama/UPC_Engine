@@ -131,14 +131,22 @@ update_status ModuleInput::Update()
     //Mouse wheel
     if (sdlEvent.type == SDL_MOUSEWHEEL)
     {
+        float fov = App->editorCamera->GetFOV();
         if (sdlEvent.wheel.y > 0) // scroll up
         {
-            position.z -= cameraSpeed * 1000;
+            if (fov > 0.5f)
+            {
+                fov -= 0.05;
+            }
         }
         else if (sdlEvent.wheel.y < 0) // scroll down
         {
-            position.z += cameraSpeed * 1000;
+            if (fov < 2.0f)
+            {
+                fov += 0.05;
+            }
         }
+        App->editorCamera->SetFOV(fov);
 
         if (sdlEvent.wheel.x > 0) // scroll right
         {

@@ -24,6 +24,7 @@ void Model::LoadModel(const char* file_name)
 
 		if (lastIndex != std::string::npos)
 		{
+			currentPath = modelName.substr(0, lastIndex + 1);
 			modelName = modelName.substr(lastIndex + 1);
 
 			lastIndex = modelName.find_last_of(".");
@@ -33,13 +34,13 @@ void Model::LoadModel(const char* file_name)
 
 			if (lastIndex != std::string::npos)
 			{
+				currentPath = modelName.substr(0, lastIndex + 1);
 				modelName = modelName.substr(lastIndex + 1);
 
 				lastIndex = modelName.find_last_of(".");
 				modelName = modelName.substr(0, lastIndex);
 			}
 		}
-
 
 		LoadMaterials(scene);
 		LoadMeshes(scene->mMeshes, scene->mNumMeshes);
@@ -64,7 +65,7 @@ void Model::LoadMaterials(const aiScene* scene)
 	{
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 		{
-			materials.push_back(App->texture->LoadTexture(file.data));
+			materials.push_back(App->texture->LoadTexture(file.data, currentPath));
 			materialsNames.push_back((std::string)file.data);
 		}
 	}

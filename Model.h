@@ -28,5 +28,6 @@ private:
 	vector<Mesh*> meshes;
 
 	std::string modelName = "";
+	std::string currentPath = "";
 };
 
