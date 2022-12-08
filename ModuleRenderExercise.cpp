@@ -21,14 +21,14 @@ ModuleRenderExercise::~ModuleRenderExercise()
 // Called before render is available
 bool ModuleRenderExercise::Init()
 {	
-	const char* vertexShaderSource = App->program->LoadShaderSource("./../Assets/Shaders/vertexShader.glsl");
-	const char* fragmentShaderSource = App->program->LoadShaderSource("./../Assets/Shaders/fragmentShader.glsl");
+	const char* vertexShaderSource = App->program->LoadShaderSource("./Assets/Shaders/vertexShader.glsl");
+	const char* fragmentShaderSource = App->program->LoadShaderSource("./Assets/Shaders/fragmentShader.glsl");
 
 	unsigned int vertexShader = App->program->CompileShader(GL_VERTEX_SHADER, vertexShaderSource);
 	unsigned int fragmentShader = App->program->CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 	App->renderer->defaultProgram = App->program->CreateProgram(vertexShader, fragmentShader);
 
-	SetNewModel("./../Assets/Models/BakerHouse.fbx");
+	SetNewModel("./Assets/Models/BakerHouse.fbx");
 
 	return true;
 }
