@@ -151,45 +151,35 @@ float3 ModuleEditorCamera::GetCameraPos()
 
 void ModuleEditorCamera::SetPositionAndRotationAccordingToModel()
 {
-    float3 position, modelCenter, minVertex, maxVertex = {0, 0, 0};
-    vector<Mesh*> meshes = App->rendererExercise->GetCurrentModel()->GetMeshes();
+    Model* currentModel = App->rendererExercise->GetCurrentModel();
+    currentModel->CalculateVertices();
 
-    for (unsigned i = 0; i < meshes.size(); ++i)
-    {
-        float3 maxCurrentMeshVertex = meshes[i]->GetAABBMax();
-        float3 currentMeshCenter = meshes[i]->GetAABBCenter();
+    float3 position = currentModel->GetMaxVertex();
+    float3 modelCenter = currentModel->GetCenter();
 
-        if (maxCurrentMeshVertex.x > maxVertex.x)
-        {
-            maxVertex.x = maxCurrentMeshVertex.x;
-        }
-        if (maxCurrentMeshVertex.y > maxVertex.y)
-        {
-            maxVertex.y = maxCurrentMeshVertex.y;
-        }
-        if (maxCurrentMeshVertex.z > maxVertex.z)
-        {
-            maxVertex.z = maxCurrentMeshVertex.z;
-        }
-
-        modelCenter += currentMeshCenter;
-    }
-
-    modelCenter /= meshes.size();
-    position.Set(maxVertex.x + 5, maxVertex.y + 5, maxVertex.z + 5);
-
+    position.Set(position.x + 5, position.y + 5, position.z + 5);
+    
     SetCameraPosition(position);
     LookAt(modelCenter);
 }
 
 void ModuleEditorCamera::LookAt(float3 direction)
 {
-    direction.Normalize();
+    direction -= frustum.Pos();
 
-    float3 localForward = frustum.Front().Normalized();
-    float3 localUp = frustum.Up().Normalized();
-    float3x3 lookAt = float3x3::LookAt(localForward, direction, localUp, float3::unitY);
+    float3x3 move = float3x3::LookAt(frustum.Front(), direction.Normalized(), frustum.Up(), float3::unitY);
 
-    frustum.SetFront(lookAt * localForward);
-    frustum.SetUp(lookAt * localUp);
+    frustum.SetFront(move.MulDir(frustum.Front()).Normalized());
+    frustum.SetUp(move.MulDir(frustum.Up()).Normalized());
+}
+
+void ModuleEditorCamera::OrbitObject(float3 rotation)
+{
+    float3 objectCenter = App->rendererExercise->GetCurrentModel()->GetCenter();
+    float3 direction = Quat(frustum.Up(), rotation.x).Transform(frustum.Pos() - objectCenter);
+
+    direction = Quat(frustum.WorldRight(), rotation.y).Transform(direction);
+
+    SetCameraPosition(direction + objectCenter);
+    LookAt(objectCenter);
 }

@@ -49,6 +49,7 @@ public:
 
 	void SetPositionAndRotationAccordingToModel();
 	void LookAt(float3 direction);
+	void OrbitObject(float3 rotation);
 
 private:
 	Frustum frustum;
