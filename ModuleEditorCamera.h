@@ -17,9 +17,17 @@ public:
 	
 	float cameraSpeed = 0.001f;
 	float cameraRotationSpeed = 0.001f;
-	void SetFOV(float valor);
-	void SetAspectRatio();
-	void SetPlaneDistances();
+
+	float GetFOV();
+	void SetFOV(float value);
+
+	float GetFarPlane();
+	void SetFarPlane(float value);
+
+	float GetNearPlane();
+	void SetNearPlane(float value);
+
+	void SetAspectRatio(float aspect);
 
 	float4x4 GetProjectionMatrix();
 	float4x4 GetViewMatrix();
@@ -27,8 +35,10 @@ public:
 
 	void ResetCameraPosition();
 	void ResetCameraRotation();
-	void SetCameraPos(float3 position);
+
+	void SetCameraPosition(float3 position);
 	float3 GetCameraPos();
+
 	float3 GetCameraUp();
 
 	float GetCameraRotationSpeed();
@@ -36,6 +46,9 @@ public:
 
 	float GetCameraSpeed();
 	void SetCameraSpeed(float value);
+
+	void SetPositionAndRotationAccordingToModel();
+	void LookAt(float3 direction);
 
 private:
 	Frustum frustum;

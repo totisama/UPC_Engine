@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRender.h"
+#include "ModuleEditorCamera.h"
 #include "ModuleWindow.h"
 #include "SDL.h"
 #include <GL/glew.h>
@@ -53,6 +54,8 @@ update_status ModuleRender::PreUpdate()
 	int h = SCREEN_HEIGHT;
 
 	SDL_GetWindowSize(App->window->window, &w, &h);
+	App->editorCamera->SetAspectRatio(w/h);
+	
 	glViewport(0, 0, w, h);
 	//glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

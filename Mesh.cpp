@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "Application.h"
 #include "ModuleRender.h"
+#include "ModuleRenderExercise.h"
 #include "ModuleEditorCamera.h"
 #include "GL/glew.h"
 #include "Game/MathGeoLib_Source/Math/float2.h"
@@ -33,14 +34,48 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	unsigned uv_size = sizeof(float) * 2 * mesh->mNumVertices;
 	float2* uvs = (float2*)(glMapBufferRange(GL_ARRAY_BUFFER, uv_offset, uv_size, GL_MAP_WRITE_BIT));
 	
+	C_STRUCT aiVector3D* vertices = mesh->mVertices;
+	float3 maxMesh = { 0, 0, 0 };
+	float3 minMesh = { 0, 0, 0 };
+
 	for (unsigned i = 0; i < mesh->mNumVertices; ++i)
 	{
+		if (vertices[i].x > maxMesh.x)
+		{
+			maxMesh.x = vertices[i].x;
+		}
+		if (vertices[i].y > maxMesh.y)
+		{
+			maxMesh.y = vertices[i].y;
+		}
+		if (vertices[i].z > maxMesh.z)
+		{
+			maxMesh.z = vertices[i].z;
+		}
+
+		if (vertices[i].x < minMesh.x)
+		{
+			minMesh.x = vertices[i].x;
+		}
+		if (vertices[i].y < minMesh.y)
+		{
+			minMesh.y = vertices[i].y;
+		}
+		if (vertices[i].z < minMesh.z)
+		{
+			minMesh.z = vertices[i].z;
+		}
+
 		uvs[i] = float2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
 	}
+
+	aabb->minPoint = minMesh;
+	aabb->maxPoint = maxMesh;
 
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	num_vertices = mesh->mNumVertices;
+	App->rendererExercise->pushAssimpLog("Vertex Buffer Object loaded");
 }
 
 void Mesh::LoadEBO(const aiMesh* mesh)
@@ -62,6 +97,7 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 
 	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 	num_indices = mesh->mNumFaces * 3;
+	App->rendererExercise->pushAssimpLog("Element Buffer Object loaded");
 }
 
 void Mesh::CreateVAO()
@@ -77,6 +113,7 @@ void Mesh::CreateVAO()
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(float) * 3 * num_vertices));
+	App->rendererExercise->pushAssimpLog("Vertex Array Object created");
 }
 
 void Mesh::DrawMesh(const std::vector<unsigned>& model_textures)
@@ -100,4 +137,19 @@ void Mesh::DrawMesh(const std::vector<unsigned>& model_textures)
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
+}
+
+float3 Mesh::GetAABBMin()
+{
+	return aabb->minPoint;
+}
+
+float3 Mesh::GetAABBMax()
+{
+	return aabb->maxPoint;
+}
+
+float3 Mesh::GetAABBCenter()
+{
+	return aabb->CenterPoint();
 }

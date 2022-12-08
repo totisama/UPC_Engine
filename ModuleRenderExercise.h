@@ -19,6 +19,9 @@ public:
 
 	void pushAssimpLog(const char* log);
 	vector <const char*> getAssimpLogs();
+	void resetAssimpLog();
+
+	Model *GetCurrentModel();
 
 private:
 	Model* model = nullptr;

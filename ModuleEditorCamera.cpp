@@ -1,4 +1,5 @@
 #include "ModuleEditorCamera.h"
+#include "ModuleRenderExercise.h"
 #include "Application.h"
 #include "Game/MathGeoLib_Source/Geometry/Frustum.h"
 #include "Game/MathGeoLib_Source/Math/Quat.h"
@@ -31,17 +32,39 @@ bool ModuleEditorCamera::CleanUp()
     return true;
 }
 
-void ModuleEditorCamera::SetFOV(float valor = 90.0f)
+float ModuleEditorCamera::GetFOV()
 {
-    frustum.SetHorizontalFovAndAspectRatio(DegToRad(valor), 1.3f);
+    return frustum.HorizontalFov();
 }
 
-void ModuleEditorCamera::SetAspectRatio()
+void ModuleEditorCamera::SetFOV(float value)
 {
+    frustum.SetPerspective(value, frustum.VerticalFov());
 }
 
-void ModuleEditorCamera::SetPlaneDistances()
+float ModuleEditorCamera::GetNearPlane()
 {
+    return frustum.NearPlaneDistance();
+}
+
+void ModuleEditorCamera::SetNearPlane(float value)
+{
+    frustum.SetViewPlaneDistances(value, frustum.FarPlaneDistance());
+}
+
+float ModuleEditorCamera::GetFarPlane()
+{
+    return frustum.FarPlaneDistance();
+}
+
+void ModuleEditorCamera::SetFarPlane(float value)
+{
+    frustum.SetViewPlaneDistances(frustum.NearPlaneDistance(), value);
+}
+
+void ModuleEditorCamera::SetAspectRatio(float aspect)
+{
+    frustum.SetHorizontalFovAndAspectRatio(frustum.HorizontalFov(), aspect);
 }
 
 float4x4 ModuleEditorCamera::GetProjectionMatrix()
@@ -88,6 +111,7 @@ void ModuleEditorCamera::ResetCameraRotation()
 {
     frustum.SetFront(-float3::unitZ);
     frustum.SetUp(float3::unitY);
+    frustum.SetHorizontalFovAndAspectRatio(DegToRad(90.0f), 1.3f);
 }
 
 float3 ModuleEditorCamera::GetCameraUp()
@@ -115,12 +139,57 @@ void ModuleEditorCamera::SetCameraSpeed(float value)
     cameraSpeed = value;
 }
 
-void ModuleEditorCamera::SetCameraPos(float3 position)
+void ModuleEditorCamera::SetCameraPosition(float3 position)
 {
-    return frustum.SetPos(position);
+    frustum.SetPos(position);
 }
 
 float3 ModuleEditorCamera::GetCameraPos()
 {
     return frustum.Pos();
+}
+
+void ModuleEditorCamera::SetPositionAndRotationAccordingToModel()
+{
+    float3 position, modelCenter, minVertex, maxVertex = {0, 0, 0};
+    vector<Mesh*> meshes = App->rendererExercise->GetCurrentModel()->GetMeshes();
+
+    for (unsigned i = 0; i < meshes.size(); ++i)
+    {
+        float3 maxCurrentMeshVertex = meshes[i]->GetAABBMax();
+        float3 currentMeshCenter = meshes[i]->GetAABBCenter();
+
+        if (maxCurrentMeshVertex.x > maxVertex.x)
+        {
+            maxVertex.x = maxCurrentMeshVertex.x;
+        }
+        if (maxCurrentMeshVertex.y > maxVertex.y)
+        {
+            maxVertex.y = maxCurrentMeshVertex.y;
+        }
+        if (maxCurrentMeshVertex.z > maxVertex.z)
+        {
+            maxVertex.z = maxCurrentMeshVertex.z;
+        }
+
+        modelCenter += currentMeshCenter;
+    }
+
+    modelCenter /= meshes.size();
+    position.Set(maxVertex.x + 5, maxVertex.y + 5, maxVertex.z + 5);
+
+    SetCameraPosition(position);
+    LookAt(modelCenter);
+}
+
+void ModuleEditorCamera::LookAt(float3 direction)
+{
+    direction.Normalize();
+
+    float3 localForward = frustum.Front().Normalized();
+    float3 localUp = frustum.Up().Normalized();
+    float3x3 lookAt = float3x3::LookAt(localForward, direction, localUp, float3::unitY);
+
+    frustum.SetFront(lookAt * localForward);
+    frustum.SetUp(lookAt * localUp);
 }

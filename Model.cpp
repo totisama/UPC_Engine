@@ -19,6 +19,29 @@ void Model::LoadModel(const char* file_name)
 	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene)
 	{
+		modelName = file_name;
+		std::size_t lastIndex = modelName.find_last_of("/");
+
+		if (lastIndex != std::string::npos)
+		{
+			currentPath = modelName.substr(0, lastIndex + 1);
+			modelName = modelName.substr(lastIndex + 1);
+
+			lastIndex = modelName.find_last_of(".");
+			modelName = modelName.substr(0, lastIndex);
+		} else {
+			lastIndex = modelName.find_last_of("\\/");
+
+			if (lastIndex != std::string::npos)
+			{
+				currentPath = modelName.substr(0, lastIndex + 1);
+				modelName = modelName.substr(lastIndex + 1);
+
+				lastIndex = modelName.find_last_of(".");
+				modelName = modelName.substr(0, lastIndex);
+			}
+		}
+
 		LoadMaterials(scene);
 		LoadMeshes(scene->mMeshes, scene->mNumMeshes);
 		App->rendererExercise->pushAssimpLog("Model loded!");
@@ -42,7 +65,11 @@ void Model::LoadMaterials(const aiScene* scene)
 	{
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 		{
-			materials.push_back(App->texture->LoadTexture(file.data));
+			materials.push_back(App->texture->LoadTexture(file.data, currentPath));
+			materialsNames.push_back((std::string)file.data);
+		} else {
+			ENGINE_LOG("Error loading the texture");
+			App->rendererExercise->pushAssimpLog("Error loading the texture");
 		}
 	}
 }
@@ -66,8 +93,28 @@ void Model::LoadMeshes(aiMesh** arrayMeshes, int totalMeshes)
 
 void Model::DrawModel()
 {
-	for (std::list<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
+	for (vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); ++it)
 	{
 		(*it)->DrawMesh(materials);
 	}
+}
+
+std::string Model::GetModelName()
+{
+	return modelName;
+}
+
+vector<Mesh*> Model::GetMeshes()
+{
+	return meshes;
+}
+
+vector<GLuint> Model::GetMaterials()
+{
+	return materials;
+}
+
+vector<std::string> Model::GetMaterialsNames()
+{
+	return materialsNames;
 }

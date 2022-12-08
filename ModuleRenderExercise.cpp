@@ -70,8 +70,10 @@ bool ModuleRenderExercise::CleanUp()
 
 void ModuleRenderExercise::SetNewModel(const char* path)
 {
+	delete model;
 	model = new Model();
 	model->LoadModel(path);
+	App->editorCamera->SetPositionAndRotationAccordingToModel();
 }
 
 void ModuleRenderExercise::pushAssimpLog(const char* log)
@@ -82,4 +84,14 @@ void ModuleRenderExercise::pushAssimpLog(const char* log)
 vector <const char*> ModuleRenderExercise::getAssimpLogs()
 {
 	return assimpLogs;
+}
+
+void ModuleRenderExercise::resetAssimpLog()
+{
+	assimpLogs = {};
+}
+
+Model* ModuleRenderExercise::GetCurrentModel()
+{
+	return model;
 }

@@ -79,16 +79,12 @@ bool ModuleEditor::CleanUp()
 
 void ModuleEditor::ShowWindow()
 {
-    static float drag_f = App->editorCamera->GetCameraSpeed();
+    static float cameraSpeed = App->editorCamera->GetCameraSpeed();
+    static float fov = App->editorCamera->GetFOV();
+    static float nearPlane = App->editorCamera->GetNearPlane();
+    static float farPlane = App->editorCamera->GetFarPlane();
     float3 cameraPosition = App->editorCamera->GetCameraPos();
-    vector<const char*> logs = App->rendererExercise->getAssimpLogs();
-    static float xPosition = cameraPosition.x;
-    static float yPosition = cameraPosition.y;
-    static float zPosition = cameraPosition.z;
     static bool wireframeMode = false;
-
-    SDL_version compiled;
-    SDL_VERSION(&compiled);
 
     if (fps.size() >= 1500) {
         fps.erase(fps.begin(), fps.begin() + 1000);
@@ -98,23 +94,21 @@ void ModuleEditor::ShowWindow()
     
     //ImGui::ShowDemoWindow();
     ImGui::Begin("Editor");
-    if (ImGui::DragFloat("Camera Speed", &drag_f, 0.0005f, 0.001f, 0.01f, "%.3f", ImGuiSliderFlags_None))
+    if (ImGui::DragFloat("Camera Speed", &cameraSpeed, 0.0005f, 0.001f, 0.01f, "%.3f", ImGuiSliderFlags_None))
     {
-        App->editorCamera->SetCameraSpeed(drag_f);
+        App->editorCamera->SetCameraSpeed(cameraSpeed);
     }
-    ImGui::Text("");
-    ImGui::Text("Camera position");
-    if (ImGui::DragFloat("x", &xPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
+    if (ImGui::DragFloat("FOV", &fov, 0.05f, 0.5f, 2.0f, "%.2f", ImGuiSliderFlags_None))
     {
-        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+        App->editorCamera->SetFOV(fov);
     }
-    if (ImGui::DragFloat("y", &yPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
+    if (ImGui::DragFloat("Near Plane", &nearPlane, 1.0f, 0.1f, 200.0f, "%.1f", ImGuiSliderFlags_None))
     {
-        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+        App->editorCamera->SetNearPlane(nearPlane);
     }
-    if (ImGui::DragFloat("z", &zPosition, 0.05f, -100, 100, "%.3f", ImGuiSliderFlags_None))
+    if (ImGui::DragFloat("Far Plane", &farPlane, 1.0f, 0.1f, 400.0f, "%.1f", ImGuiSliderFlags_None))
     {
-        App->editorCamera->SetCameraPos(float3(xPosition, yPosition, zPosition));
+        App->editorCamera->SetFarPlane(farPlane);
     }
     if (ImGui::Button("Reset camera"))
     {
@@ -127,20 +121,79 @@ void ModuleEditor::ShowWindow()
     }
     if (ImGui::CollapsingHeader("Current Model"))
     {
-        //ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Triangle count %u", 10);
-        //ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), " texture size %u", 10);
+        vector<Mesh*> meshes = App->rendererExercise->GetCurrentModel()->GetMeshes();
+        vector<GLuint> textures = App->rendererExercise->GetCurrentModel()->GetMaterials();
+        vector<std::string> texturesNames = App->rendererExercise->GetCurrentModel()->GetMaterialsNames();
+
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Name: %s", App->rendererExercise->GetCurrentModel()->GetModelName().c_str());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Number of Meshes: %u", meshes.size());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Number of Textures: %u", textures.size());
+        ImGui::Separator();
+
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Meshes:");
+        for (int i = 0; i < meshes.size(); i++)
+        {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Mesh %u", i+1);
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Indices count: %u", meshes[i]->num_indices);
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Vertices count: %u", meshes[i]->num_vertices);
+            ImGui::Text("");
+        }
+
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Textures:");
+        for (int j = 0; j < textures.size(); j++)
+        {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Texture ID-Name: %u - %s", textures[j], texturesNames[j].c_str());
+            ImGui::Image((void*)(intptr_t)textures[j], ImVec2(75, 75));
+            ImGui::Text("");
+        }
+    }
+    if (ImGui::CollapsingHeader("Add new model"))
+    {
+        ImGui::TextUnformatted("By selecting one of this buttons you can load a new Model.\n"
+            "If you want, you can drag a FBX file to the window to load it too."
+        );
+
+        if (ImGui::Button("Load Baker House Model"))
+        {
+            App->rendererExercise->resetAssimpLog();
+            App->rendererExercise->pushAssimpLog("Grass Block Model selected");
+            App->rendererExercise->SetNewModel("./../Assets/Models/BakerHouse.fbx");
+        }
+        if (ImGui::Button("Load Grass Block Model"))
+        {
+            App->rendererExercise->resetAssimpLog();
+            App->rendererExercise->pushAssimpLog("Grass Block Model selected");
+            App->rendererExercise->SetNewModel("./../Assets/Models/Grass_block.fbx");
+        }
+        if (ImGui::Button("Load Watch Tower Model"))
+        {
+            App->rendererExercise->resetAssimpLog();
+            App->rendererExercise->pushAssimpLog("Nations Watch Tower selected");
+            App->rendererExercise->SetNewModel("./../Assets/Models/WatchTower.fbx");
+        }
     }
     if (ImGui::CollapsingHeader("About"))
     {
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "OpenGL version %s", glGetString(GL_VERSION));
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "SDL version %u.%u.%u", compiled.major, compiled.minor, compiled.patch);
+        SDL_version compiled;
+        SDL_VERSION(&compiled);
+
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Platform: %s", SDL_GetPlatform());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "CPUs: %u", SDL_GetCPUCount());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "RAM: %u GB", SDL_GetSystemRAM()/1000);
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "OpenGL version: %s", glGetString(GL_VERSION));
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "SDL version: %u.%u.%u", compiled.major, compiled.minor, compiled.patch);
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "GLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Vendor: %s", glGetString(GL_VENDOR));
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Renderer: %s", glGetString(GL_RENDERER));
         ImGui::Separator();
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Frames Per Second");
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "%.1f FPS", ImGui::GetIO().Framerate);
-        ImGui::PlotHistogram("", &fps[0], 1500, 0, "", 0.0f, 5000.0f, ImVec2(350.0f, 100.0f), 0);
+        ImGui::PlotHistogram("", &fps[0], 1500, 0, "", 0.0f, 4000.0f, ImVec2(350.0f, 100.0f), 0);
     }
     if (ImGui::CollapsingHeader("Assimp logs"))
     {
+        vector<const char*> logs = App->rendererExercise->getAssimpLogs();
         for (unsigned i = 0; i < logs.size(); ++i)
         {
             ImGui::Text(logs[i]);
