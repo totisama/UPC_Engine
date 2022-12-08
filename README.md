@@ -5,6 +5,7 @@
 <p align="center">Universitat Politecnica de Catalunya</p>
 <p align="center">Game Engines</p>
 <p align="center">Assignment 1</p>
+<p align="center">Rodrigo Samayoa</p>
 <p align="center">08/12/2022</p>
 
 <hr />

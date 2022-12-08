@@ -187,19 +187,19 @@ void ModuleEditor::ShowWindow()
         {
             App->rendererExercise->resetAssimpLog();
             App->rendererExercise->pushAssimpLog("Grass Block Model selected");
-            App->rendererExercise->SetNewModel("./../Assets/Models/BakerHouse.fbx");
+            App->rendererExercise->SetNewModel("./Assets/Models/BakerHouse.fbx");
         }
         if (ImGui::Button("Load Grass Block Model"))
         {
             App->rendererExercise->resetAssimpLog();
             App->rendererExercise->pushAssimpLog("Grass Block Model selected");
-            App->rendererExercise->SetNewModel("./../Assets/Models/Grass_block.fbx");
+            App->rendererExercise->SetNewModel("./Assets/Models/Grass_block.fbx");
         }
         if (ImGui::Button("Load Watch Tower Model"))
         {
             App->rendererExercise->resetAssimpLog();
             App->rendererExercise->pushAssimpLog("Nations Watch Tower selected");
-            App->rendererExercise->SetNewModel("./../Assets/Models/WatchTower.fbx");
+            App->rendererExercise->SetNewModel("./Assets/Models/WatchTower.fbx");
         }
     }
     if (ImGui::CollapsingHeader("Configuration"))

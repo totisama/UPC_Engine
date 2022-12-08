@@ -86,7 +86,7 @@ GLuint ModuleTexture::LoadTexture(const char* fileName, string modelPath)
 
 		if (FAILED(hResult))
 		{
-			texturePath = "./../Assets/Textures/" + fileNameString;
+			texturePath = "./Assets/Textures/" + fileNameString;
 			App->rendererExercise->pushAssimpLog("	Texture folder...");
 			hResult = TestTexturePath(texturePath, image);
 
