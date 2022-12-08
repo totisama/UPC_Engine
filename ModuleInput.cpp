@@ -152,14 +152,14 @@ update_status ModuleInput::Update()
         }
         App->editorCamera->SetFOV(fov);
 
-        if (sdlEvent.wheel.x > 0) // scroll right
+        /*if (sdlEvent.wheel.x > 0) // scroll right
         {
             position.x += cameraSpeed * 1000;
         }
         else if (sdlEvent.wheel.x < 0) // scroll left
         {
             position.x -= cameraSpeed * 1000;
-        }
+        }*/
     }
 
     //Mouse motion
