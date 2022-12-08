@@ -94,7 +94,7 @@ void ModuleEditor::ShowWindow()
     
     //ImGui::ShowDemoWindow();
     ImGui::Begin("Editor");
-    if (ImGui::DragFloat("Camera Speed", &cameraSpeed, 0.0005f, 0.001f, 0.01f, "%.3f", ImGuiSliderFlags_None))
+    if (ImGui::DragFloat("Movement Speed Multiplier", &cameraSpeed, 0.0005f, 0.001f, 0.015f, "%.3f", ImGuiSliderFlags_None))
     {
         App->editorCamera->SetCameraSpeed(cameraSpeed);
     }
@@ -138,7 +138,7 @@ void ModuleEditor::ShowWindow()
         ImGui::Text("D: Right");
         ImGui::Text("Q: Up");
         ImGui::Text("E: Down");
-        ImGui::Text("Shift: Double the moment speed");
+        ImGui::Text("Shift: Double the Movement Speed");
         ImGui::Text("Left Click + Move Mouse: Rotate Camera");
         ImGui::Text("Up Arrow: Rotate Up");
         ImGui::Text("Down Arrow: Rotate Down");
