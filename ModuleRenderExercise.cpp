@@ -73,7 +73,7 @@ void ModuleRenderExercise::SetNewModel(const char* path)
 	delete model;
 	model = new Model();
 	model->LoadModel(path);
-	//App->editorCamera->SetCameraPosition();
+	App->editorCamera->SetPositionAndRotationAccordingToModel();
 }
 
 void ModuleRenderExercise::pushAssimpLog(const char* log)

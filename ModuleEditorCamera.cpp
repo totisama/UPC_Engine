@@ -1,4 +1,5 @@
 #include "ModuleEditorCamera.h"
+#include "ModuleRenderExercise.h"
 #include "Application.h"
 #include "Game/MathGeoLib_Source/Geometry/Frustum.h"
 #include "Game/MathGeoLib_Source/Math/Quat.h"
@@ -146,4 +147,49 @@ void ModuleEditorCamera::SetCameraPosition(float3 position)
 float3 ModuleEditorCamera::GetCameraPos()
 {
     return frustum.Pos();
+}
+
+void ModuleEditorCamera::SetPositionAndRotationAccordingToModel()
+{
+    float3 position, modelCenter, minVertex, maxVertex = {0, 0, 0};
+    vector<Mesh*> meshes = App->rendererExercise->GetCurrentModel()->GetMeshes();
+
+    for (unsigned i = 0; i < meshes.size(); ++i)
+    {
+        float3 maxCurrentMeshVertex = meshes[i]->GetAABBMax();
+        float3 currentMeshCenter = meshes[i]->GetAABBCenter();
+
+        if (maxCurrentMeshVertex.x > maxVertex.x)
+        {
+            maxVertex.x = maxCurrentMeshVertex.x;
+        }
+        if (maxCurrentMeshVertex.y > maxVertex.y)
+        {
+            maxVertex.y = maxCurrentMeshVertex.y;
+        }
+        if (maxCurrentMeshVertex.z > maxVertex.z)
+        {
+            maxVertex.z = maxCurrentMeshVertex.z;
+        }
+
+        modelCenter += currentMeshCenter;
+    }
+
+    modelCenter /= meshes.size();
+    position.Set(maxVertex.x + 5, maxVertex.y + 5, maxVertex.z + 5);
+
+    SetCameraPosition(position);
+    LookAt(modelCenter);
+}
+
+void ModuleEditorCamera::LookAt(float3 direction)
+{
+    direction.Normalize();
+
+    float3 localForward = frustum.Front().Normalized();
+    float3 localUp = frustum.Up().Normalized();
+    float3x3 lookAt = float3x3::LookAt(localForward, direction, localUp, float3::unitY);
+
+    frustum.SetFront(lookAt * localForward);
+    frustum.SetUp(lookAt * localUp);
 }

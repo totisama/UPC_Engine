@@ -47,6 +47,9 @@ public:
 	float GetCameraSpeed();
 	void SetCameraSpeed(float value);
 
+	void SetPositionAndRotationAccordingToModel();
+	void LookAt(float3 direction);
+
 private:
 	Frustum frustum;
 };
