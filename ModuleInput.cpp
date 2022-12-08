@@ -111,11 +111,12 @@ update_status ModuleInput::Update()
     }
 
     //Pitch
+    float cameraUp = App->editorCamera->GetCameraUp().y;
     if (keyboard[SDL_SCANCODE_UP])
     {
         rotation.y += cameraRotationSpeed;
     }
-    if (keyboard[SDL_SCANCODE_DOWN])
+    if (keyboard[SDL_SCANCODE_DOWN] && cameraUp > 0.2)
     {
         rotation.y -= cameraRotationSpeed;
     }
@@ -129,6 +130,7 @@ update_status ModuleInput::Update()
     {
         rotation.x += cameraRotationSpeed;
     }
+    App->editorCamera->Rotate(rotation);
 
     //Mouse wheel
     if (sdlEvent.type == SDL_MOUSEWHEEL)
@@ -150,23 +152,23 @@ update_status ModuleInput::Update()
         }
         App->editorCamera->SetFOV(fov);
 
-        if (sdlEvent.wheel.x > 0) // scroll right
+        /*if (sdlEvent.wheel.x > 0) // scroll right
         {
             position.x += cameraSpeed * 1000;
         }
         else if (sdlEvent.wheel.x < 0) // scroll left
         {
             position.x -= cameraSpeed * 1000;
-        }
+        }*/
     }
 
     //Mouse motion
     if (sdlEvent.type == SDL_MOUSEMOTION && sdlEvent.button.button == SDL_BUTTON_LEFT)
     {
-        //float cameraUp = App->editorCamera->GetCameraUp().y;
+        float cameraUp = App->editorCamera->GetCameraUp().y;
         //ENGINE_LOG("UP: %f", cameraUp);
         //Down motion
-        if (sdlEvent.motion.yrel > 0 /* && cameraUp > 0.1*/)
+        if (sdlEvent.motion.yrel > 0 && cameraUp > 0.2)
         {
             rotation.y -= cameraRotationSpeed * 10;
         }
@@ -186,10 +188,26 @@ update_status ModuleInput::Update()
         {
             rotation.x += cameraRotationSpeed * 10;
         }
+
+        //Orbit
+        if (keyboard[SDL_SCANCODE_LALT])
+        {
+            App->editorCamera->OrbitObject(rotation);
+        }
+        //Rotation
+        else
+        {
+            App->editorCamera->Rotate(rotation);
+        }
+    }
+
+    //Focus object
+    if (keyboard[SDL_SCANCODE_F])
+    {
+        App->editorCamera->SetPositionAndRotationAccordingToModel();
     }
 
     App->editorCamera->Translate(position);
-    App->editorCamera->Rotate(rotation);
 
     return UPDATE_CONTINUE;
 }

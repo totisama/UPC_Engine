@@ -118,3 +118,76 @@ vector<std::string> Model::GetMaterialsNames()
 {
 	return materialsNames;
 }
+
+
+float3 Model::GetMaxVertex()
+{
+	return maxVertex;
+}
+
+void Model::SetMaxVertex(float3 vertex)
+{
+	maxVertex = vertex;
+}
+
+float3 Model::GetMinVertex()
+{
+	return minVertex;
+}
+
+void Model::SetMinVertex(float3 vertex)
+{
+	minVertex = vertex;
+}
+
+float3 Model::GetCenter()
+{
+	return centerVertex;
+}
+
+void Model::SetCenter(float3 center)
+{
+	centerVertex = center;
+}
+
+void Model::CalculateVertices()
+{
+	vector<Mesh*> meshes = GetMeshes();
+
+	for (unsigned i = 0; i < meshes.size(); ++i)
+	{
+		float3 maxCurrentMeshVertex = meshes[i]->GetAABBMax();
+		float3 minCurrentMeshVertex = meshes[i]->GetAABBMin();
+		float3 currentMeshCenter = meshes[i]->GetAABBCenter();
+
+		if (maxCurrentMeshVertex.x > maxVertex.x)
+		{
+			maxVertex.x = maxCurrentMeshVertex.x;
+		}
+		if (maxCurrentMeshVertex.y > maxVertex.y)
+		{
+			maxVertex.y = maxCurrentMeshVertex.y;
+		}
+		if (maxCurrentMeshVertex.z > maxVertex.z)
+		{
+			maxVertex.z = maxCurrentMeshVertex.z;
+		}
+
+		if (minCurrentMeshVertex.x < minVertex.x)
+		{
+			minVertex.x = minCurrentMeshVertex.x;
+		}
+		if (minCurrentMeshVertex.y > minVertex.y)
+		{
+			minVertex.y = minCurrentMeshVertex.y;
+		}
+		if (minCurrentMeshVertex.z > minVertex.z)
+		{
+			minVertex.z = minCurrentMeshVertex.z;
+		}
+
+		centerVertex += currentMeshCenter;
+	}
+
+	centerVertex /= meshes.size();
+}
