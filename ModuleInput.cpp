@@ -130,6 +130,7 @@ update_status ModuleInput::Update()
     {
         rotation.x += cameraRotationSpeed;
     }
+    App->editorCamera->Rotate(rotation);
 
     //Mouse wheel
     if (sdlEvent.type == SDL_MOUSEWHEEL)
@@ -187,10 +188,26 @@ update_status ModuleInput::Update()
         {
             rotation.x += cameraRotationSpeed * 10;
         }
+
+        //Orbit
+        if (keyboard[SDL_SCANCODE_LALT])
+        {
+            App->editorCamera->OrbitObject(rotation);
+        }
+        //Rotation
+        else
+        {
+            App->editorCamera->Rotate(rotation);
+        }
+    }
+
+    //Focus object
+    if (keyboard[SDL_SCANCODE_F])
+    {
+        App->editorCamera->SetPositionAndRotationAccordingToModel();
     }
 
     App->editorCamera->Translate(position);
-    App->editorCamera->Rotate(rotation);
 
     return UPDATE_CONTINUE;
 }
