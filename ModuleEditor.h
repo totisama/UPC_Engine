@@ -16,6 +16,8 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	update_status continueValue = UPDATE_CONTINUE;
+
 private:
 	void ShowWindow();
 

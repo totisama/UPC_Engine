@@ -54,7 +54,7 @@ update_status ModuleEditor::Update()
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    return UPDATE_CONTINUE;
+    return continueValue;
 }
 
 update_status ModuleEditor::PostUpdate()
@@ -119,7 +119,37 @@ void ModuleEditor::ShowWindow()
     {
         App->texture->SetWireframeMode(wireframeMode);
     }
-    if (ImGui::CollapsingHeader("Current Model"))
+    if (ImGui::CollapsingHeader("About"))
+    {
+        if (ImGui::Button("Exit"))
+        {
+            continueValue = UPDATE_STOP;
+        }
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Visit the GitHub: https://github.com/totisama/UPC_Engine");
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "With this engine you can load FBXs files and\n"
+            "move the camera around with the controllers"
+        );
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Controllers");
+        ImGui::Text("Escape: Quit Engine");
+        ImGui::Text("W: Forward");
+        ImGui::Text("S: Backward");
+        ImGui::Text("A: Left");
+        ImGui::Text("D: Right");
+        ImGui::Text("Q: Up");
+        ImGui::Text("E: Down");
+        ImGui::Text("Shift: Double the moment speed");
+        ImGui::Text("Left Click + Move Mouse: Rotate Camera");
+        ImGui::Text("Up Arrow: Rotate Up");
+        ImGui::Text("Down Arrow: Rotate Down");
+        ImGui::Text("Left Arrow: Rotate Left");
+        ImGui::Text("Right Arrow: Rotate Right");
+        ImGui::Text("Left Alt + Left Click + Move Mouse: Orbit Model");
+        ImGui::Text("Mouse Wheel: Zoom In & Out");
+        ImGui::Text("F: Focus Model");
+        ImGui::Text("Drag & Drop FBX: Load New Model");
+    }
+    if (ImGui::CollapsingHeader("Properties"))
     {
         vector<Mesh*> meshes = App->rendererExercise->GetCurrentModel()->GetMeshes();
         vector<GLuint> textures = App->rendererExercise->GetCurrentModel()->GetMaterials();
@@ -172,14 +202,14 @@ void ModuleEditor::ShowWindow()
             App->rendererExercise->SetNewModel("./../Assets/Models/WatchTower.fbx");
         }
     }
-    if (ImGui::CollapsingHeader("About"))
+    if (ImGui::CollapsingHeader("Configuration"))
     {
         SDL_version compiled;
         SDL_VERSION(&compiled);
 
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Platform: %s", SDL_GetPlatform());
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "CPUs: %u", SDL_GetCPUCount());
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "RAM: %u GB", SDL_GetSystemRAM()/1000);
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "RAM: %u GBs", SDL_GetSystemRAM() / 1000);
         ImGui::Separator();
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "OpenGL version: %s", glGetString(GL_VERSION));
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "SDL version: %u.%u.%u", compiled.major, compiled.minor, compiled.patch);
